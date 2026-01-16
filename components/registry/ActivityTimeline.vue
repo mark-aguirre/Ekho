@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isLoading" class="space-y-4">
+  <div v-if="isLoading" class="space-y-4" role="status" aria-label="Loading activities">
     <div v-for="i in 5" :key="i" class="flex gap-4 animate-pulse">
       <div class="w-10 h-10 rounded-full bg-slate-200" />
       <div class="flex-1 space-y-2">
@@ -10,7 +10,7 @@
   </div>
 
   <div v-else-if="!activities || activities.length === 0" class="text-center py-12">
-    <Clock :size="32" class="mx-auto mb-2 text-slate-300" />
+    <Clock :size="32" class="mx-auto mb-2 text-slate-300" aria-hidden="true" />
     <p class="text-slate-500">No recent activity</p>
   </div>
 

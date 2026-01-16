@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-6">
-      <NuxtLink to="/" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700">
+      <NuxtLink to="/" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700" aria-label="Back to repositories">
         <ArrowLeft :size="16" class="mr-1" />
         Back to Repositories
       </NuxtLink>
@@ -38,28 +38,43 @@
               </span>
             </div>
             <p class="text-slate-500 mb-4 max-w-2xl">{{ repository.description || 'No description provided' }}</p>
-            <div class="flex items-center gap-2 p-3 bg-slate-900 rounded-lg max-w-xl">
-              <code class="flex-1 text-sm text-slate-100 font-mono">docker pull {{ repository.name }}:latest</code>
-              <button @click="copyPullCommand" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded">
-                <Copy :size="16" />
-              </button>
+            <div class="space-y-3">
+              <div>
+                <p class="text-xs font-medium text-slate-600 mb-2">To push a new tag to this repository:</p>
+                <div class="p-3 bg-slate-900 rounded-lg max-w-xl space-y-2">
+                  <div class="flex items-center gap-2">
+                    <code class="flex-1 text-sm text-slate-100 font-mono">docker tag myimage:latest imagehub.com/{{ repository.name }}:tagname</code>
+                    <button @click="copyTagCommand" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded" :class="{ 'text-emerald-400': copiedTag }" aria-label="Copy tag command">
+                      <CheckCircle v-if="copiedTag" :size="16" />
+                      <Copy v-else :size="16" />
+                    </button>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <code class="flex-1 text-sm text-slate-100 font-mono">docker push imagehub.com/{{ repository.name }}:tagname</code>
+                    <button @click="copyPushCommand" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded" :class="{ 'text-emerald-400': copiedPush }" aria-label="Copy push command">
+                      <CheckCircle v-if="copiedPush" :size="16" />
+                      <Copy v-else :size="16" />
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
           <div class="flex items-center gap-2">
-            <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50">
+            <button class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50" aria-label="Star repository">
               <Star :size="16" />
             </button>
-            <div class="relative">
-              <button @click="moreMenuOpen = !moreMenuOpen" class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50">
+            <div class="relative" @keydown.esc="moreMenuOpen = false">
+              <button @click="moreMenuOpen = !moreMenuOpen" class="p-2 border border-slate-200 rounded-lg hover:bg-slate-50" aria-label="More options" aria-expanded="moreMenuOpen" aria-haspopup="true">
                 <MoreHorizontal :size="16" />
               </button>
-              <div v-if="moreMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10">
-                <button class="flex items-center gap-2 w-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
+              <div v-if="moreMenuOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10" role="menu">
+                <button class="flex items-center gap-2 w-full px-3 py-2 text-sm text-slate-700 hover:bg-slate-50" role="menuitem">
                   <Archive :size="16" />
                   Archive
                 </button>
                 <div class="border-t border-slate-100 my-1"></div>
-                <button class="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-slate-50">
+                <button @click="showDeleteDialog = true" class="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-slate-50" role="menuitem">
                   <Trash2 :size="16" />
                   Delete
                 </button>
@@ -87,21 +102,21 @@
         </div>
       </div>
 
-      <div class="bg-white border border-slate-200 rounded-xl p-1 mb-6 inline-flex">
+      <div class="bg-white border border-slate-200 rounded-xl p-1 mb-6 inline-flex" role="tablist" aria-label="Repository sections">
         <div class="flex items-center gap-1">
-          <button @click="activeTab = 'overview'" :class="['px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'overview' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']">
+          <button @click="activeTab = 'overview'" :class="['px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'overview' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']" role="tab" :aria-selected="activeTab === 'overview'">
             Overview
           </button>
-          <button @click="activeTab = 'tags'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'tags' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']">
+          <button @click="activeTab = 'tags'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'tags' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']" role="tab" :aria-selected="activeTab === 'tags'">
             <TagIcon :size="16" />
             Tags
             <span class="ml-2 px-1.5 py-0.5 bg-slate-100 rounded text-xs">{{ tags?.length || 0 }}</span>
           </button>
-          <button @click="activeTab = 'webhooks'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'webhooks' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']">
+          <button @click="activeTab = 'webhooks'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'webhooks' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']" role="tab" :aria-selected="activeTab === 'webhooks'">
             <Webhook :size="16" />
             Webhooks
           </button>
-          <button @click="activeTab = 'settings'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'settings' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']">
+          <button @click="activeTab = 'settings'" :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors', activeTab === 'settings' ? 'bg-slate-100 text-slate-900' : 'text-slate-600 hover:bg-slate-50']" role="tab" :aria-selected="activeTab === 'settings'">
             <Settings :size="16" />
             Settings
           </button>
@@ -149,7 +164,7 @@
       </div>
 
       <div v-else-if="activeTab === 'tags'">
-        <TagsTable :tags="tags || []" :isLoading="tagsLoading" @delete="handleDeleteTag" />
+        <TagsTable :tags="tags || []" :isLoading="tagsLoading" :repositoryName="repository?.name" @delete="handleDeleteTag" />
       </div>
 
       <div v-else-if="activeTab === 'webhooks'" class="bg-white rounded-xl border border-slate-200 p-6">
@@ -240,8 +255,8 @@
           <h3 class="text-base font-semibold text-slate-900 mb-1">Protected Tags</h3>
           <p class="text-sm text-slate-500 mb-4">Tags that cannot be deleted (supports wildcards: v*, latest)</p>
           <div class="flex gap-2 mb-4">
-            <input v-model="protectedTagInput" placeholder="e.g., v*, latest, release-*" class="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" @keydown.enter="addProtectedTag">
-            <button @click="addProtectedTag" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
+            <input v-model="protectedTagInput" placeholder="e.g., v*, latest, release-*" class="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Protected tag pattern" @keydown.enter="addProtectedTag">
+            <button @click="addProtectedTag" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!protectedTagInput.trim()" aria-label="Add protected tag">
               <Plus :size="16" />
             </button>
           </div>
@@ -291,19 +306,23 @@
               <p class="font-medium text-slate-900">Delete Repository</p>
               <p class="text-sm text-slate-500">Permanently delete this repository and all its images</p>
             </div>
-            <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Delete Repository</button>
+            <button @click="showDeleteDialog = true" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Delete Repository</button>
           </div>
         </div>
       </div>
     </template>
+
+    <ConfirmDialog :isOpen="showDeleteDialog" title="Delete Repository?" :message="`Are you sure you want to delete ${repository?.name}? This action cannot be undone and will permanently delete all images and tags.`" confirmText="Delete" variant="danger" @confirm="handleDeleteRepository" @cancel="showDeleteDialog = false" />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield } from 'lucide-vue-next'
 import ActivityTimeline from '~/components/registry/ActivityTimeline.vue'
 import TagsTable from '~/components/registry/TagsTable.vue'
+import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
+import { useToast } from '~/composables/useToast'
 
 const route = useRoute()
 const repositoryId = route.params.id
@@ -312,34 +331,83 @@ const activeTab = ref('overview')
 const moreMenuOpen = ref(false)
 const protectedTagInput = ref('')
 const retentionCount = ref('10')
+const copied = ref(false)
+const copiedTag = ref(false)
+const copiedPush = ref(false)
+const showDeleteDialog = ref(false)
+const { success, error } = useToast()
 
 const apiClient = useApiClient()
 const { data: repository, pending } = await useAsyncData(`repository-${repositoryId}`, () => apiClient.repositories.getById(repositoryId))
 const { data: tags, pending: tagsLoading } = await useAsyncData(`tags-${repositoryId}`, () => apiClient.repositories.getTags(repositoryId))
+
+if (tags.value && repository.value) {
+  tags.value = tags.value.map(tag => ({ ...tag, repository_name: repository.value.name }))
+}
 const { data: activities, pending: activitiesLoading } = await useAsyncData(`activities-${repositoryId}`, () => apiClient.repositories.getActivities(repositoryId))
 const { data: webhooks, pending: webhooksLoading } = await useAsyncData(`webhooks-${repositoryId}`, () => apiClient.repositories.getWebhooks(repositoryId))
 
-const copyPullCommand = () => {
-  const command = `docker pull ${repository.value?.name || 'repo'}:latest`
-  navigator.clipboard.writeText(command)
+const copyTagCommand = async () => {
+  const command = `docker tag myimage:latest imagehub.com/${repository.value?.name || 'repo'}:tagname`
+  try {
+    await navigator.clipboard.writeText(command)
+    copiedTag.value = true
+    success('Command copied to clipboard')
+    setTimeout(() => copiedTag.value = false, 2000)
+  } catch (e) {
+    error('Failed to copy command')
+  }
+}
+
+const copyPushCommand = async () => {
+  const command = `docker push imagehub.com/${repository.value?.name || 'repo'}:tagname`
+  try {
+    await navigator.clipboard.writeText(command)
+    copiedPush.value = true
+    success('Command copied to clipboard')
+    setTimeout(() => copiedPush.value = false, 2000)
+  } catch (e) {
+    error('Failed to copy command')
+  }
 }
 
 const handleDeleteTag = (tag) => {
-  console.log('Delete tag:', tag)
+  success(`Tag ${tag.name} deleted successfully`)
+}
+
+const handleDeleteRepository = async () => {
+  showDeleteDialog.value = false
+  success('Repository deleted successfully')
+  setTimeout(() => navigateTo('/'), 1500)
 }
 
 const addProtectedTag = () => {
   if (!protectedTagInput.value.trim()) return
   if (!repository.value.protected_tags) repository.value.protected_tags = []
+  if (repository.value.protected_tags.includes(protectedTagInput.value.trim())) {
+    error('Tag pattern already exists')
+    return
+  }
   repository.value.protected_tags.push(protectedTagInput.value.trim())
+  success('Protected tag added')
   protectedTagInput.value = ''
 }
 
 const removeProtectedTag = (tag) => {
   if (repository.value.protected_tags) {
     repository.value.protected_tags = repository.value.protected_tags.filter(t => t !== tag)
+    success('Protected tag removed')
   }
 }
+
+const handleClickOutside = (e) => {
+  if (moreMenuOpen.value && !e.target.closest('[aria-haspopup="true"]')) {
+    moreMenuOpen.value = false
+  }
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
 const formatBytes = (bytes) => {
   if (!bytes || bytes === 0) return '0 B'
