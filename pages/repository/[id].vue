@@ -313,10 +313,11 @@ const moreMenuOpen = ref(false)
 const protectedTagInput = ref('')
 const retentionCount = ref('10')
 
-const { data: repository, pending } = await useFetch(`/api/repositories/${repositoryId}`)
-const { data: tags, pending: tagsLoading } = await useFetch(`/api/repositories/${repositoryId}/tags`)
-const { data: activities, pending: activitiesLoading } = await useFetch(`/api/repositories/${repositoryId}/activities`)
-const { data: webhooks, pending: webhooksLoading } = await useFetch(`/api/repositories/${repositoryId}/webhooks`)
+const apiClient = useApiClient()
+const { data: repository, pending } = await useAsyncData(`repository-${repositoryId}`, () => apiClient.repositories.getById(repositoryId))
+const { data: tags, pending: tagsLoading } = await useAsyncData(`tags-${repositoryId}`, () => apiClient.repositories.getTags(repositoryId))
+const { data: activities, pending: activitiesLoading } = await useAsyncData(`activities-${repositoryId}`, () => apiClient.repositories.getActivities(repositoryId))
+const { data: webhooks, pending: webhooksLoading } = await useAsyncData(`webhooks-${repositoryId}`, () => apiClient.repositories.getWebhooks(repositoryId))
 
 const copyPullCommand = () => {
   const command = `docker pull ${repository.value?.name || 'repo'}:latest`

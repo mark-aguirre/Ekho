@@ -65,7 +65,8 @@ const searchQuery = ref('')
 const visibilityFilter = ref('all')
 const sortBy = ref('updated')
 
-const { data: repositories, pending } = await useFetch('/api/repositories')
+const apiClient = useApiClient()
+const { data: repositories, pending } = await useAsyncData('repositories', () => apiClient.repositories.getAll())
 
 const filteredRepositories = computed(() => {
   if (!repositories.value) return []
