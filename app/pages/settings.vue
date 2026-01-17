@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+  <div class="w-[80%] mx-auto px-6 py-4 sm:py-8">
     <div class="mb-4 sm:mb-8">
       <h1 class="text-xl sm:text-2xl font-bold text-slate-900">Settings</h1>
       <p class="text-sm sm:text-base text-slate-500 mt-1">Manage your account settings and preferences</p>

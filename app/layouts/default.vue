@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-slate-50">
     <header class="sticky top-0 z-40 bg-white border-b border-slate-200">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="w-[80%] mx-auto px-6">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center gap-8">
             <NuxtLink to="/" class="flex items-center gap-2.5" aria-label="Ekho Home">
