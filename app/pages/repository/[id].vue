@@ -190,19 +190,30 @@
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2">
                   <h4 class="font-medium text-slate-900 text-sm">{{ webhook.name }}</h4>
-                  <span v-if="webhook.status === 'active'" class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-xs">
-                    <CheckCircle :size="10" />
-                    Active
-                  </span>
-                  <span v-else class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-xs">
-                    <Pause :size="10" />
-                    Paused
-                  </span>
+                  <button @click="toggleWebhookStatus(webhook)" :class="['inline-flex items-center gap-1 px-1.5 py-0.5 border rounded text-xs cursor-pointer hover:opacity-80', webhook.status === 'active' ? 'bg-emerald-100 text-emerald-700 border-emerald-200' : 'bg-slate-100 text-slate-600 border-slate-200']">
+                    <CheckCircle v-if="webhook.status === 'active'" :size="10" />
+                    <Pause v-else :size="10" />
+                    {{ webhook.status === 'active' ? 'Active' : 'Paused' }}
+                  </button>
                 </div>
-                <p class="text-xs text-slate-500 font-mono truncate mt-1">{{ webhook.url }}</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <p class="text-xs text-slate-500 font-mono truncate">{{ webhook.url }}</p>
+                  <button @click="copyWebhookUrl(webhook)" class="text-xs text-slate-400 hover:text-slate-600" title="Copy URL">
+                    <Copy :size="12" />
+                  </button>
+                </div>
               </div>
               <div class="flex items-center gap-1.5 flex-shrink-0">
                 <span v-for="event in webhook.events" :key="event" class="px-1.5 py-0.5 border border-slate-200 rounded text-xs">{{ event }}</span>
+                <button @click="testWebhook(webhook)" class="p-1.5 text-slate-400 hover:text-[#611f69] hover:bg-slate-50 rounded" title="Test webhook">
+                  <Zap :size="14" />
+                </button>
+                <button @click="editWebhook(webhook)" class="p-1.5 text-slate-400 hover:text-[#611f69] hover:bg-slate-50 rounded" title="Edit webhook">
+                  <Edit :size="14" />
+                </button>
+                <button @click="deleteWebhook(webhook)" class="p-1.5 text-slate-400 hover:text-red-600 hover:bg-slate-50 rounded" title="Delete webhook">
+                  <Trash2 :size="14" />
+                </button>
               </div>
             </div>
             <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-2 text-xs text-slate-500 hover:text-slate-700">
@@ -313,19 +324,20 @@
     </template>
 
     <ConfirmDialog :isOpen="showDeleteDialog" title="Delete Repository?" :message="`Are you sure you want to delete ${repository?.name}? This action cannot be undone and will permanently delete all images and tags.`" confirmText="Delete" variant="danger" @confirm="handleDeleteRepository" @cancel="showDeleteDialog = false" />
-    <CreateWebhookModal :isOpen="showWebhookModal" :repositoryId="repositoryId" @close="showWebhookModal = false" @submit="handleCreateWebhook" />
+    <CreateWebhookModal :isOpen="showWebhookModal" :repositoryId="repositoryId" :webhook="editingWebhook" @close="showWebhookModal = false; editingWebhook = null" @submit="handleCreateWebhook" />
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield, XCircle } from 'lucide-vue-next'
+import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield, XCircle, Edit, Zap } from 'lucide-vue-next'
 import ActivityTimeline from '~/components/registry/ActivityTimeline.vue'
 import TagsTable from '~/components/registry/TagsTable.vue'
 import DeliveryLogs from '~/components/registry/DeliveryLogs.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import CreateWebhookModal from '~/components/ui/CreateWebhookModal.vue'
 import { useToast } from '~/composables/useToast'
+import { useConfirm } from '~/composables/useConfirm'
 
 const route = useRoute()
 const repositoryId = String(route.params.id)
@@ -339,8 +351,10 @@ const copiedTag = ref(false)
 const copiedPush = ref(false)
 const showDeleteDialog = ref(false)
 const showWebhookModal = ref(false)
+const editingWebhook = ref(null)
 const expandedWebhook = ref(null)
 const { success, error } = useToast()
+const { confirm } = useConfirm()
 
 const apiClient = useApiClient()
 const { data: repository, pending } = await apiClient.repositories.getById(repositoryId)
@@ -445,16 +459,76 @@ const formatTimestamp = (timestamp) => {
 
 const handleCreateWebhook = async (data) => {
   try {
-    const newWebhook = await apiClient.repositories.createWebhook(repositoryId, data)
-    if (webhooks.value) {
-      webhooks.value.push(newWebhook)
+    if (editingWebhook.value) {
+      const updatedWebhook = await apiClient.repositories.updateWebhook(repositoryId, editingWebhook.value.id, data)
+      const index = webhooks.value.findIndex(w => w.id === editingWebhook.value.id)
+      if (index !== -1) {
+        webhooks.value[index] = updatedWebhook
+      }
+      success('Webhook updated successfully')
     } else {
-      webhooks.value = [newWebhook]
+      const newWebhook = await apiClient.repositories.createWebhook(repositoryId, data)
+      if (webhooks.value) {
+        webhooks.value.push(newWebhook)
+      } else {
+        webhooks.value = [newWebhook]
+      }
+      success('Webhook created successfully')
     }
     showWebhookModal.value = false
-    success('Webhook created successfully')
+    editingWebhook.value = null
   } catch (e) {
-    error('Failed to create webhook')
+    error(editingWebhook.value ? 'Failed to update webhook' : 'Failed to create webhook')
+  }
+}
+
+const editWebhook = (webhook) => {
+  editingWebhook.value = webhook
+  showWebhookModal.value = true
+}
+
+const deleteWebhook = async (webhook) => {
+  if (await confirm('Delete Webhook', `Are you sure you want to delete "${webhook.name}"? This action cannot be undone.`)) {
+    try {
+      await apiClient.repositories.deleteWebhook(repositoryId, webhook.id)
+      webhooks.value = webhooks.value.filter(w => w.id !== webhook.id)
+      success('Webhook deleted successfully')
+    } catch (e) {
+      error('Failed to delete webhook')
+    }
+  }
+}
+
+const toggleWebhookStatus = async (webhook) => {
+  try {
+    const newStatus = webhook.status === 'active' ? 'paused' : 'active'
+    await apiClient.repositories.updateWebhookStatus(repositoryId, webhook.id, newStatus)
+    webhook.status = newStatus
+    success(`Webhook ${newStatus === 'active' ? 'activated' : 'paused'}`)
+  } catch (e) {
+    error('Failed to update webhook status')
+  }
+}
+
+const testWebhook = async (webhook) => {
+  try {
+    const result = await apiClient.repositories.testWebhook(repositoryId, webhook.id)
+    if (result.success) {
+      success(`Test successful! Response: ${result.status_code}`)
+    } else {
+      error(`Test failed: ${result.error}`)
+    }
+  } catch (e) {
+    error('Failed to test webhook')
+  }
+}
+
+const copyWebhookUrl = async (webhook) => {
+  try {
+    await navigator.clipboard.writeText(webhook.url)
+    success('URL copied to clipboard')
+  } catch (e) {
+    error('Failed to copy URL')
   }
 }
 </script>

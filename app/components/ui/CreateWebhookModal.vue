@@ -6,6 +6,7 @@ import type { CreateWebhookInput } from '@@/types/repository'
 const props = defineProps<{
   isOpen: boolean
   repositoryId: string
+  webhook?: any
 }>()
 
 const emit = defineEmits<{
@@ -65,7 +66,14 @@ const handleClose = () => {
 }
 
 watch(() => props.isOpen, (isOpen) => {
-  if (!isOpen) resetForm()
+  if (isOpen && props.webhook) {
+    name.value = props.webhook.name
+    url.value = props.webhook.url
+    selectedEvents.value = props.webhook.events || ['push']
+    status.value = props.webhook.status || 'active'
+  } else if (!isOpen) {
+    resetForm()
+  }
 })
 </script>
 
@@ -73,7 +81,7 @@ watch(() => props.isOpen, (isOpen) => {
   <div v-if="isOpen" class="modal-overlay" @click.self="handleClose">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Add Webhook</h2>
+        <h2>{{ webhook ? 'Edit Webhook' : 'Add Webhook' }}</h2>
         <button @click="handleClose" class="close-btn" aria-label="Close">
           <X :size="20" />
         </button>
@@ -155,7 +163,7 @@ watch(() => props.isOpen, (isOpen) => {
             Cancel
           </button>
           <button type="submit" class="btn-primary" :disabled="!name || !url || selectedEvents.length === 0">
-            Create Webhook
+            {{ webhook ? 'Update Webhook' : 'Create Webhook' }}
           </button>
         </div>
       </form>
