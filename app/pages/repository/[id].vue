@@ -173,9 +173,8 @@
             <h3 class="font-semibold text-slate-900">Webhooks</h3>
             <p class="text-sm text-slate-500">Receive HTTP callbacks when events occur</p>
           </div>
-          <button @click="showWebhookModal = true" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm">
-            <Plus :size="16" />
-            Add Webhook
+          <button @click="showWebhookModal = true" class="text-sm text-[#611f69] hover:text-[#4a154b] font-medium hover:underline">
+            + New webhook
           </button>
         </div>
         <div v-if="webhooksLoading" class="space-y-4">

@@ -1,15 +1,9 @@
 <template>
   <div class="w-[80%] mx-auto px-6 py-8">
     <div class="mb-8">
-      <div class="flex items-center justify-between mb-6">
-        <div>
-          <h1 class="text-2xl font-bold text-slate-900">Repositories</h1>
-          <p class="text-slate-500 mt-1">Browse and manage your container image repositories</p>
-        </div>
-        <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg" aria-label="Create new repository">
-          <Plus :size="16" />
-          New Repository
-        </button>
+      <div class="mb-6">
+        <h1 class="text-2xl font-bold text-slate-900">Repositories</h1>
+        <p class="text-slate-500 mt-1">Browse and manage your container image repositories</p>
       </div>
 
       <div class="flex flex-col sm:flex-row gap-3">
@@ -35,6 +29,9 @@
 
     <div class="flex items-center justify-between mb-4">
       <p class="text-sm text-slate-500">{{ filteredRepositories.length }} {{ filteredRepositories.length === 1 ? 'repository' : 'repositories' }}</p>
+      <button @click="showCreateModal = true" class="text-sm text-[#611f69] hover:text-[#4a154b] font-medium hover:underline" aria-label="Create new repository">
+       + New repository
+      </button>
     </div>
 
     <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
