@@ -21,6 +21,13 @@ export const useApiClient = () => {
       getWebhooks: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
         return useFetch<Webhook[]>(`/api/repositories/${id}/webhooks`, { key: `webhooks-${id}` })
+      },
+      createWebhook: async (id: string, data: any) => {
+        if (!id) throw new Error('Repository ID is required')
+        return await $fetch<Webhook>(`/api/repositories/${id}/webhooks`, {
+          method: 'POST',
+          body: data
+        })
       }
     },
     user: {

@@ -64,3 +64,10 @@ export interface DeliveryLog {
   response_time_ms: number
   timestamp: string
 }
+
+export interface CreateWebhookInput {
+  name: string
+  url: string
+  events: string[]
+  status: WebhookStatus
+}

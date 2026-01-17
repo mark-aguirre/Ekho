@@ -173,7 +173,7 @@
             <h3 class="font-semibold text-slate-900">Webhooks</h3>
             <p class="text-sm text-slate-500">Receive HTTP callbacks when events occur</p>
           </div>
-          <button class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm">
+          <button @click="showWebhookModal = true" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm">
             <Plus :size="16" />
             Add Webhook
           </button>
@@ -316,6 +316,7 @@
     </template>
 
     <ConfirmDialog :isOpen="showDeleteDialog" title="Delete Repository?" :message="`Are you sure you want to delete ${repository?.name}? This action cannot be undone and will permanently delete all images and tags.`" confirmText="Delete" variant="danger" @confirm="handleDeleteRepository" @cancel="showDeleteDialog = false" />
+    <CreateWebhookModal :isOpen="showWebhookModal" :repositoryId="repositoryId" @close="showWebhookModal = false" @submit="handleCreateWebhook" />
   </div>
 </template>
 
@@ -326,6 +327,7 @@ import ActivityTimeline from '~/components/registry/ActivityTimeline.vue'
 import TagsTable from '~/components/registry/TagsTable.vue'
 import DeliveryLogs from '~/components/registry/DeliveryLogs.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
+import CreateWebhookModal from '~/components/ui/CreateWebhookModal.vue'
 import { useToast } from '~/composables/useToast'
 
 const route = useRoute()
@@ -339,6 +341,7 @@ const copied = ref(false)
 const copiedTag = ref(false)
 const copiedPush = ref(false)
 const showDeleteDialog = ref(false)
+const showWebhookModal = ref(false)
 const expandedWebhook = ref(null)
 const { success, error } = useToast()
 
@@ -441,5 +444,20 @@ const formatTimestamp = (timestamp) => {
   if (hours < 1) return 'Just now'
   if (hours < 24) return `${hours}h ago`
   return `${Math.floor(hours / 24)}d ago`
+}
+
+const handleCreateWebhook = async (data) => {
+  try {
+    const newWebhook = await apiClient.repositories.createWebhook(repositoryId, data)
+    if (webhooks.value) {
+      webhooks.value.push(newWebhook)
+    } else {
+      webhooks.value = [newWebhook]
+    }
+    showWebhookModal.value = false
+    success('Webhook created successfully')
+  } catch (e) {
+    error('Failed to create webhook')
+  }
 }
 </script>
