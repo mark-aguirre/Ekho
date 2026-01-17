@@ -488,14 +488,15 @@ const editWebhook = (webhook) => {
 }
 
 const deleteWebhook = async (webhook) => {
-  if (await confirm('Delete Webhook', `Are you sure you want to delete "${webhook.name}"? This action cannot be undone.`)) {
-    try {
-      await apiClient.repositories.deleteWebhook(repositoryId, webhook.id)
-      webhooks.value = webhooks.value.filter(w => w.id !== webhook.id)
-      success('Webhook deleted successfully')
-    } catch (e) {
-      error('Failed to delete webhook')
-    }
+  try {
+    const confirmed = await confirm('Delete Webhook', `Are you sure you want to delete "${webhook.name}"? This action cannot be undone.`)
+    if (!confirmed) return
+    
+    await apiClient.repositories.deleteWebhook(repositoryId, webhook.id)
+    webhooks.value = webhooks.value.filter(w => w.id !== webhook.id)
+    success('Webhook deleted successfully')
+  } catch (e) {
+    error('Failed to delete webhook')
   }
 }
 
