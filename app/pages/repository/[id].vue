@@ -185,134 +185,129 @@
           <Webhook :size="32" class="mx-auto mb-2 text-slate-300" />
           <p class="text-slate-500 mb-3">No webhooks configured</p>
         </div>
-        <div v-else class="space-y-3">
-          <div v-for="webhook in webhooks" :key="webhook.id" class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-200">
-            <div class="flex items-start justify-between">
+        <div v-else class="space-y-2">
+          <div v-for="webhook in webhooks" :key="webhook.id" class="bg-white rounded-lg border border-slate-200 p-3 hover:border-slate-300 hover:shadow-md transition-all duration-200">
+            <div class="flex items-center justify-between gap-3">
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                  <h4 class="font-semibold text-slate-900">{{ webhook.name }}</h4>
-                  <span v-if="webhook.status === 'active'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-xs">
-                    <CheckCircle :size="12" />
+                <div class="flex items-center gap-2">
+                  <h4 class="font-medium text-slate-900 text-sm">{{ webhook.name }}</h4>
+                  <span v-if="webhook.status === 'active'" class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-xs">
+                    <CheckCircle :size="10" />
                     Active
                   </span>
-                  <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-xs">
-                    <Pause :size="12" />
+                  <span v-else class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-xs">
+                    <Pause :size="10" />
                     Paused
                   </span>
                 </div>
-                <p class="text-sm text-slate-500 font-mono truncate mb-4">{{ webhook.url }}</p>
-                <div class="flex items-center gap-2 flex-wrap">
-                  <span v-for="event in webhook.events" :key="event" class="px-2 py-0.5 border border-slate-200 rounded text-xs">{{ event }}</span>
-                </div>
+                <p class="text-xs text-slate-500 font-mono truncate mt-1">{{ webhook.url }}</p>
               </div>
-              <div class="flex flex-col items-end gap-2 ml-4">
-                <button class="text-slate-300 hover:text-[#611f69] transition-colors" aria-label="Webhook options">
-                  <ChevronRight :size="20" />
-                </button>
+              <div class="flex items-center gap-1.5 flex-shrink-0">
+                <span v-for="event in webhook.events" :key="event" class="px-1.5 py-0.5 border border-slate-200 rounded text-xs">{{ event }}</span>
               </div>
             </div>
-            <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-3 text-sm text-slate-500 hover:text-slate-700">
-              <ChevronRight :size="16" :class="{ 'rotate-90': expandedWebhook === webhook.id }" class="transition-transform" />
+            <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-2 text-xs text-slate-500 hover:text-slate-700">
+              <ChevronRight :size="14" :class="{ 'rotate-90': expandedWebhook === webhook.id }" class="transition-transform" />
               View delivery logs ({{ webhook.delivery_logs.length }})
             </button>
-            <div v-if="expandedWebhook === webhook.id" class="mt-4 border-t border-slate-100 pt-4">
+            <div v-if="expandedWebhook === webhook.id" class="mt-2 border-t border-slate-100 pt-2">
               <DeliveryLogs :logs="webhook.delivery_logs" />
             </div>
           </div>
         </div>
       </div>
 
-      <div v-else-if="activeTab === 'settings'" class="space-y-6">
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 class="text-base font-semibold text-slate-900 mb-1">Visibility</h3>
-          <p class="text-sm text-slate-500 mb-4">Control who can see and pull from this repository</p>
-          <div class="flex gap-3">
-            <button :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium', repository.visibility === 'public' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-700 hover:bg-slate-50']">
-              <Globe :size="16" />
+      <div v-else-if="activeTab === 'settings'" class="space-y-4">
+        <div class="bg-white rounded-lg border border-slate-200 p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Visibility</h3>
+          <p class="text-xs text-slate-500 mb-3">Control who can see and pull from this repository</p>
+          <div class="flex gap-2">
+            <button :class="['flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium', repository.visibility === 'public' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-700 hover:bg-slate-50']">
+              <Globe :size="14" />
               Public
             </button>
-            <button :class="['flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium', repository.visibility === 'private' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-700 hover:bg-slate-50']">
-              <Lock :size="16" />
+            <button :class="['flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium', repository.visibility === 'private' ? 'bg-indigo-600 text-white' : 'border border-slate-200 text-slate-700 hover:bg-slate-50']">
+              <Lock :size="14" />
               Private
             </button>
           </div>
-          <p class="text-sm text-slate-500 mt-3">{{ repository.visibility === 'public' ? 'Anyone can pull images from this repository' : 'Only collaborators can pull images from this repository' }}</p>
+          <p class="text-xs text-slate-500 mt-2">{{ repository.visibility === 'public' ? 'Anyone can pull images from this repository' : 'Only collaborators can pull images from this repository' }}</p>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 class="text-base font-semibold text-slate-900 mb-1">Tag Immutability</h3>
-          <p class="text-sm text-slate-500 mb-4">Prevent tags from being overwritten or deleted</p>
+        <div class="bg-white rounded-lg border border-slate-200 p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Tag Immutability</h3>
+          <p class="text-xs text-slate-500 mb-3">Prevent tags from being overwritten or deleted</p>
           <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <Shield :size="20" class="text-slate-400" />
+            <div class="flex items-center gap-2">
+              <Shield :size="16" class="text-slate-400" />
               <div>
-                <p class="font-medium text-slate-900">Enable tag immutability</p>
-                <p class="text-sm text-slate-500">Once pushed, tags cannot be modified</p>
+                <p class="text-sm font-medium text-slate-900">Enable tag immutability</p>
+                <p class="text-xs text-slate-500">Once pushed, tags cannot be modified</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" class="sr-only peer" :checked="repository.tag_immutability">
-              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 class="text-base font-semibold text-slate-900 mb-1">Protected Tags</h3>
-          <p class="text-sm text-slate-500 mb-4">Tags that cannot be deleted (supports wildcards: v*, latest)</p>
-          <div class="flex gap-2 mb-4">
-            <input v-model="protectedTagInput" placeholder="e.g., v*, latest, release-*" class="flex-1 px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Protected tag pattern" @keydown.enter="addProtectedTag">
-            <button @click="addProtectedTag" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!protectedTagInput.trim()" aria-label="Add protected tag">
-              <Plus :size="16" />
+        <div class="bg-white rounded-lg border border-slate-200 p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Protected Tags</h3>
+          <p class="text-xs text-slate-500 mb-3">Tags that cannot be deleted (supports wildcards: v*, latest)</p>
+          <div class="flex gap-2 mb-3">
+            <input v-model="protectedTagInput" placeholder="e.g., v*, latest, release-*" class="flex-1 px-2 py-1.5 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Protected tag pattern" @keydown.enter="addProtectedTag">
+            <button @click="addProtectedTag" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed" :disabled="!protectedTagInput.trim()" aria-label="Add protected tag">
+              <Plus :size="14" />
             </button>
           </div>
-          <div class="flex flex-wrap gap-2">
-            <span v-for="tag in repository.protected_tags" :key="tag" class="inline-flex items-center gap-1 px-2 py-1 bg-violet-50 text-violet-700 border border-violet-200 rounded">
-              <Shield :size="12" />
+          <div class="flex flex-wrap gap-1.5">
+            <span v-for="tag in repository.protected_tags" :key="tag" class="inline-flex items-center gap-1 px-1.5 py-0.5 bg-violet-50 text-violet-700 border border-violet-200 rounded text-xs">
+              <Shield :size="10" />
               {{ tag }}
-              <button @click="removeProtectedTag(tag)" class="ml-1 hover:text-violet-900">×</button>
+              <button @click="removeProtectedTag(tag)" class="ml-0.5 hover:text-violet-900">×</button>
             </span>
-            <p v-if="!repository.protected_tags || repository.protected_tags.length === 0" class="text-sm text-slate-500">No protected tags configured</p>
+            <p v-if="!repository.protected_tags || repository.protected_tags.length === 0" class="text-xs text-slate-500">No protected tags configured</p>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-slate-200 p-6">
-          <h3 class="text-base font-semibold text-slate-900 mb-1">Retention Policy</h3>
-          <p class="text-sm text-slate-500 mb-4">Automatically clean up old tags to save storage</p>
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-3">
-              <Clock :size="20" class="text-slate-400" />
+        <div class="bg-white rounded-lg border border-slate-200 p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Retention Policy</h3>
+          <p class="text-xs text-slate-500 mb-3">Automatically clean up old tags to save storage</p>
+          <div class="flex items-center justify-between mb-3">
+            <div class="flex items-center gap-2">
+              <Clock :size="16" class="text-slate-400" />
               <div>
-                <p class="font-medium text-slate-900">Enable retention policy</p>
-                <p class="text-sm text-slate-500">Automatically delete old tags</p>
+                <p class="text-sm font-medium text-slate-900">Enable retention policy</p>
+                <p class="text-xs text-slate-500">Automatically delete old tags</p>
               </div>
             </div>
             <label class="relative inline-flex items-center cursor-pointer">
               <input type="checkbox" class="sr-only peer" :checked="repository.retention_policy?.enabled">
-              <div class="w-11 h-6 bg-slate-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-indigo-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
             </label>
           </div>
-          <div v-if="repository.retention_policy?.enabled" class="flex items-center gap-3 pl-8">
-            <label class="text-sm text-slate-700">Keep last</label>
-            <select v-model="retentionCount" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          <div v-if="repository.retention_policy?.enabled" class="flex items-center gap-2 pl-6">
+            <label class="text-xs text-slate-700">Keep last</label>
+            <select v-model="retentionCount" class="px-2 py-1 text-sm border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="25">25</option>
               <option value="50">50</option>
               <option value="100">100</option>
             </select>
-            <label class="text-sm text-slate-700">tags</label>
+            <label class="text-xs text-slate-700">tags</label>
           </div>
         </div>
 
-        <div class="bg-white rounded-xl border border-red-200 p-6">
-          <h3 class="text-base font-semibold text-red-600 mb-4">Danger Zone</h3>
-          <div class="flex items-center justify-between p-4 bg-red-50 rounded-lg">
+        <div class="bg-white rounded-lg border border-red-200 p-4">
+          <h3 class="text-sm font-semibold text-red-600 mb-3">Danger Zone</h3>
+          <div class="flex items-center justify-between p-3 bg-red-50 rounded-lg">
             <div>
-              <p class="font-medium text-slate-900">Delete Repository</p>
-              <p class="text-sm text-slate-500">Permanently delete this repository and all its images</p>
+              <p class="text-sm font-medium text-slate-900">Delete Repository</p>
+              <p class="text-xs text-slate-500">Permanently delete this repository and all its images</p>
             </div>
-            <button @click="showDeleteDialog = true" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Delete Repository</button>
+            <button @click="showDeleteDialog = true" class="px-3 py-1.5 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-medium">Delete Repository</button>
           </div>
         </div>
       </div>
