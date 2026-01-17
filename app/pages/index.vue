@@ -6,7 +6,7 @@
           <h1 class="text-2xl font-bold text-slate-900">Repositories</h1>
           <p class="text-slate-500 mt-1">Browse and manage your container image repositories</p>
         </div>
-        <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg" aria-label="Create new repository">
+        <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg" aria-label="Create new repository">
           <Plus :size="16" />
           New Repository
         </button>
@@ -15,15 +15,15 @@
       <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-          <input v-model="searchQuery" type="text" placeholder="Search repositories..." aria-label="Search repositories" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+          <input v-model="searchQuery" type="text" placeholder="Search repositories..." aria-label="Search repositories" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
         </div>
         <div class="flex gap-2">
-          <select v-model="visibilityFilter" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Filter by visibility">
+          <select v-model="visibilityFilter" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" aria-label="Filter by visibility">
             <option value="all">All</option>
             <option value="public">Public</option>
             <option value="private">Private</option>
           </select>
-          <select v-model="sortBy" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Sort repositories">
+          <select v-model="sortBy" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" aria-label="Sort repositories">
             <option value="updated">Recently updated</option>
             <option value="name">Name</option>
             <option value="pulls">Most pulls</option>
@@ -45,7 +45,7 @@
       <Package :size="48" class="mx-auto mb-4 text-slate-300" aria-hidden="true" />
       <h3 class="text-lg font-medium text-slate-900 mb-2">{{ searchQuery || visibilityFilter !== 'all' ? 'No repositories found' : 'No repositories yet' }}</h3>
       <p class="text-slate-500 mb-6 max-w-md mx-auto">{{ searchQuery || visibilityFilter !== 'all' ? 'Try adjusting your search or filters' : 'Create your first repository to start pushing container images' }}</p>
-      <button v-if="!searchQuery && visibilityFilter === 'all'" @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg mx-auto" aria-label="Create repository">
+      <button v-if="!searchQuery && visibilityFilter === 'all'" @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg mx-auto" aria-label="Create repository">
         <Plus :size="16" />
         Create Repository
       </button>

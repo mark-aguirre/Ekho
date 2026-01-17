@@ -8,7 +8,7 @@
     <div class="flex flex-col lg:flex-row gap-4 sm:gap-6 items-start">
       <nav class="w-full lg:w-64 overflow-x-auto lg:overflow-x-visible">
         <div class="flex lg:flex-col gap-2 lg:space-y-1 pb-2 lg:pb-0 min-w-max lg:min-w-0">
-          <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="['flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap lg:w-full', activeTab === tab.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-600 hover:bg-slate-100']">
+          <button v-for="tab in tabs" :key="tab.id" @click="activeTab = tab.id" :class="['flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2 sm:py-2.5 rounded-lg text-xs sm:text-sm font-medium transition-colors whitespace-nowrap lg:w-full', activeTab === tab.id ? 'bg-[#f8f4f9] text-[#611f69]' : 'text-slate-600 hover:bg-slate-100']">
             <component :is="tab.icon" :size="16" class="sm:w-[18px] sm:h-[18px]" />
             {{ tab.label }}
           </button>
@@ -24,7 +24,7 @@
           </div>
           <div v-else-if="errorSubscription" class="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
             <p class="text-sm sm:text-base text-red-600 mb-3">{{ errorSubscription }}</p>
-            <button @click="retrySubscription" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Retry</button>
+            <button @click="retrySubscription" class="px-4 py-2 bg-[#e01e5a] hover:bg-red-700 text-white rounded-lg text-sm font-medium">Retry</button>
           </div>
           <div v-else-if="subscription" class="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
             <div v-if="usagePercentages && (usagePercentages.storage.percentage > 90 || usagePercentages.bandwidth.percentage > 90)" class="mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
@@ -45,7 +45,7 @@
                 </div>
                 <p class="text-sm sm:text-base text-slate-600">{{ subscription.description }}</p>
               </div>
-              <button @click="showPricingModal = true" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium whitespace-nowrap">Upgrade Plan</button>
+              <button @click="showPricingModal = true" class="w-full sm:w-auto px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium whitespace-nowrap">Upgrade Plan</button>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
               <div class="p-3 sm:p-4 bg-slate-50 rounded-lg">
@@ -64,7 +64,7 @@
                   <span class="font-medium text-slate-900">{{ usagePercentages.storage.used }} / {{ usagePercentages.storage.limit }}</span>
                 </div>
                 <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all" :class="usagePercentages.storage.percentage > 90 ? 'bg-red-600' : usagePercentages.storage.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usagePercentages.storage.percentage}%`"></div>
+                  <div class="h-full rounded-full transition-all" :class="usagePercentages.storage.percentage > 90 ? 'bg-[#e01e5a]' : usagePercentages.storage.percentage > 75 ? 'bg-yellow-600' : 'bg-[#611f69]'" :style="`width: ${usagePercentages.storage.percentage}%`"></div>
                 </div>
               </div>
               <div>
@@ -73,7 +73,7 @@
                   <span class="font-medium text-slate-900">{{ usagePercentages.bandwidth.used }} / {{ usagePercentages.bandwidth.limit }}</span>
                 </div>
                 <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all" :class="usagePercentages.bandwidth.percentage > 90 ? 'bg-red-600' : usagePercentages.bandwidth.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usagePercentages.bandwidth.percentage}%`"></div>
+                  <div class="h-full rounded-full transition-all" :class="usagePercentages.bandwidth.percentage > 90 ? 'bg-[#e01e5a]' : usagePercentages.bandwidth.percentage > 75 ? 'bg-yellow-600' : 'bg-[#611f69]'" :style="`width: ${usagePercentages.bandwidth.percentage}%`"></div>
                 </div>
               </div>
             </div>
@@ -100,19 +100,19 @@
           </div>
           <div v-else-if="errorProfile" class="bg-red-50 border border-red-200 rounded-xl p-4 sm:p-6">
             <p class="text-sm sm:text-base text-red-600 mb-3">{{ errorProfile }}</p>
-            <button @click="retryProfile" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Retry</button>
+            <button @click="retryProfile" class="px-4 py-2 bg-[#e01e5a] hover:bg-red-700 text-white rounded-lg text-sm font-medium">Retry</button>
           </div>
           <div v-else-if="profile" class="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
             <h2 class="text-base sm:text-lg font-semibold text-slate-900 mb-4">Account Information</h2>
             <div class="space-y-4">
               <div>
                 <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Full Name</label>
-                <input v-model="profileForm.fullName" type="text" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" @input="hasUnsavedChanges = true" />
+                <input v-model="profileForm.fullName" type="text" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" @input="hasUnsavedChanges = true" />
               </div>
               <div>
                 <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Email</label>
                 <div class="flex flex-col sm:flex-row gap-2">
-                  <input v-model="profileForm.email" type="email" class="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" @input="hasUnsavedChanges = true" />
+                  <input v-model="profileForm.email" type="email" class="flex-1 px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" @input="hasUnsavedChanges = true" />
                   <span class="px-3 py-2 bg-green-50 text-green-700 text-xs sm:text-sm font-medium rounded-lg flex items-center justify-center gap-1">
                     <CheckCircle :size="16" /> Verified
                   </span>
@@ -130,7 +130,7 @@
                   <input :value="profile.memberSince" type="text" disabled class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg bg-slate-50 text-slate-500" />
                 </div>
               </div>
-              <button @click="saveProfile" :disabled="savingProfile || !hasUnsavedChanges" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              <button @click="saveProfile" :disabled="savingProfile || !hasUnsavedChanges" class="w-full sm:w-auto px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                 {{ savingProfile ? 'Saving...' : 'Save Changes' }}
               </button>
             </div>
@@ -144,7 +144,7 @@
               <div>
                 <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Current Password</label>
                 <div class="relative">
-                  <input v-model="passwordForm.current" :type="showCurrentPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input v-model="passwordForm.current" :type="showCurrentPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
                   <button type="button" @click="showCurrentPassword = !showCurrentPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                     <Eye v-if="!showCurrentPassword" :size="18" />
                     <EyeOff v-else :size="18" />
@@ -154,7 +154,7 @@
               <div>
                 <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">New Password</label>
                 <div class="relative">
-                  <input v-model="passwordForm.new" :type="showNewPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" @input="validatePassword" />
+                  <input v-model="passwordForm.new" :type="showNewPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" @input="validatePassword" />
                   <button type="button" @click="showNewPassword = !showNewPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                     <Eye v-if="!showNewPassword" :size="18" />
                     <EyeOff v-else :size="18" />
@@ -166,7 +166,7 @@
               <div>
                 <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Confirm New Password</label>
                 <div class="relative">
-                  <input v-model="passwordForm.confirm" :type="showConfirmPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" @input="validatePassword" />
+                  <input v-model="passwordForm.confirm" :type="showConfirmPassword ? 'text' : 'password'" class="w-full px-3 sm:px-4 py-2 pr-10 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" @input="validatePassword" />
                   <button type="button" @click="showConfirmPassword = !showConfirmPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                     <Eye v-if="!showConfirmPassword" :size="18" />
                     <EyeOff v-else :size="18" />
@@ -174,7 +174,7 @@
                 </div>
                 <p v-if="passwordForm.confirm && passwordForm.new !== passwordForm.confirm" class="text-red-600 text-xs sm:text-sm mt-1">Passwords do not match</p>
               </div>
-              <button @click="updatePassword" :disabled="updatingPassword || !canUpdatePassword" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+              <button @click="updatePassword" :disabled="updatingPassword || !canUpdatePassword" class="w-full sm:w-auto px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed">
                 {{ updatingPassword ? 'Updating...' : 'Update Password' }}
               </button>
             </div>
@@ -186,7 +186,7 @@
                 <h2 class="text-base sm:text-lg font-semibold text-slate-900">Two-Factor Authentication</h2>
                 <p class="text-xs sm:text-sm text-slate-600 mt-1">Add an extra layer of security to your account</p>
               </div>
-              <button :class="['relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0', security.twoFactor ? 'bg-indigo-600' : 'bg-slate-200']" @click="toggleTwoFactor" :disabled="togglingTwoFactor" aria-label="Toggle two-factor authentication">
+              <button :class="['relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0', security.twoFactor ? 'bg-[#611f69]' : 'bg-slate-200']" @click="toggleTwoFactor" :disabled="togglingTwoFactor" aria-label="Toggle two-factor authentication">
                 <span :class="['inline-block h-4 w-4 transform rounded-full bg-white transition-transform', security.twoFactor ? 'translate-x-6' : 'translate-x-1']"></span>
               </button>
             </div>
@@ -222,7 +222,7 @@
                   <p class="text-sm sm:text-base font-medium text-slate-900">{{ notif.label }}</p>
                   <p class="text-xs sm:text-sm text-slate-600">{{ notif.description }}</p>
                 </div>
-                <button :class="['relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0', notif.enabled ? 'bg-indigo-600' : 'bg-slate-200']" @click="toggleNotification(notif.id)" :aria-label="`Toggle ${notif.label}`">
+                <button :class="['relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0', notif.enabled ? 'bg-[#611f69]' : 'bg-slate-200']" @click="toggleNotification(notif.id)" :aria-label="`Toggle ${notif.label}`">
                   <span :class="['inline-block h-4 w-4 transform rounded-full bg-white transition-transform', notif.enabled ? 'translate-x-6' : 'translate-x-1']"></span>
                 </button>
               </div>
@@ -234,12 +234,12 @@
           <div class="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
             <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0 mb-4">
               <h2 class="text-base sm:text-lg font-semibold text-slate-900">API Tokens</h2>
-              <button @click="showTokenModal = true" class="w-full sm:w-auto px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium">Generate Token</button>
+              <button @click="showTokenModal = true" class="w-full sm:w-auto px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium">Generate Token</button>
             </div>
             <div v-if="apiTokens.length === 0" class="text-center py-6 sm:py-8">
               <Key :size="40" class="sm:w-12 sm:h-12 mx-auto text-slate-300 mb-3" />
               <p class="text-sm sm:text-base text-slate-600 mb-4">No API tokens yet</p>
-              <button @click="showTokenModal = true" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium">Create Your First Token</button>
+              <button @click="showTokenModal = true" class="px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium">Create Your First Token</button>
             </div>
             <div v-else class="space-y-3">
               <div v-for="token in apiTokens" :key="token.id" class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 bg-slate-50 rounded-lg">
@@ -260,7 +260,7 @@
                   <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Your new token</label>
                   <div class="flex flex-col sm:flex-row gap-2">
                     <input :value="newToken" readonly class="flex-1 px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs sm:text-sm font-mono" />
-                    <button @click="copyToken" class="px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium">Copy</button>
+                    <button @click="copyToken" class="px-3 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium">Copy</button>
                   </div>
                   <p class="text-xs sm:text-sm text-amber-600 mt-2">Save this token now. You won't be able to see it again!</p>
                 </div>
@@ -269,11 +269,11 @@
               <div v-else class="space-y-4">
                 <div>
                   <label class="block text-xs sm:text-sm font-medium text-slate-700 mb-2">Token Name</label>
-                  <input v-model="tokenName" type="text" placeholder="e.g., Production Deploy" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <input v-model="tokenName" type="text" placeholder="e.g., Production Deploy" class="w-full px-3 sm:px-4 py-2 text-sm sm:text-base border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
                 </div>
                 <div class="flex gap-3">
                   <button @click="showTokenModal = false" class="flex-1 px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium">Cancel</button>
-                  <button @click="generateToken" :disabled="!tokenName || generatingToken" class="flex-1 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium disabled:opacity-50">
+                  <button @click="generateToken" :disabled="!tokenName || generatingToken" class="flex-1 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm font-medium disabled:opacity-50">
                     {{ generatingToken ? 'Generating...' : 'Generate' }}
                   </button>
                 </div>
@@ -293,7 +293,7 @@
               <div class="pt-4 border-t border-slate-200">
                 <h3 class="text-sm sm:text-base font-medium text-slate-900 mb-2">Delete Account</h3>
                 <p class="text-xs sm:text-sm text-slate-600 mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
-                <button @click="deleteAccount" class="w-full sm:w-auto px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Delete Account</button>
+                <button @click="deleteAccount" class="w-full sm:w-auto px-4 py-2 bg-[#e01e5a] hover:bg-red-700 text-white rounded-lg text-sm font-medium">Delete Account</button>
               </div>
             </div>
           </div>
@@ -307,7 +307,7 @@
         <p class="text-sm sm:text-base text-slate-600 mb-6">{{ dialog.message }}</p>
         <div class="flex gap-3 justify-end">
           <button @click="dialog.onCancel" class="px-4 py-2 border border-slate-200 hover:bg-slate-50 rounded-lg text-sm font-medium">Cancel</button>
-          <button @click="dialog.onConfirm" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Confirm</button>
+          <button @click="dialog.onConfirm" class="px-4 py-2 bg-[#e01e5a] hover:bg-red-700 text-white rounded-lg text-sm font-medium">Confirm</button>
         </div>
       </div>
     </div>

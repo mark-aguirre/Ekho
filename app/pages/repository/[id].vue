@@ -186,34 +186,37 @@
           <p class="text-slate-500 mb-3">No webhooks configured</p>
         </div>
         <div v-else class="space-y-3">
-          <div v-for="webhook in webhooks" :key="webhook.id" class="bg-white rounded-xl border border-slate-200 overflow-hidden">
-            <div class="p-4">
-              <div class="flex items-start justify-between">
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1">
-                    <h4 class="font-medium text-slate-900">{{ webhook.name }}</h4>
-                    <span v-if="webhook.status === 'active'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-xs">
-                      <CheckCircle :size="12" />
-                      Active
-                    </span>
-                    <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-xs">
-                      <Pause :size="12" />
-                      Paused
-                    </span>
-                  </div>
-                  <p class="text-sm text-slate-500 font-mono truncate">{{ webhook.url }}</p>
-                  <div class="flex items-center gap-2 mt-2 flex-wrap">
-                    <span v-for="event in webhook.events" :key="event" class="px-2 py-0.5 border border-slate-200 rounded text-xs">{{ event }}</span>
-                  </div>
+          <div v-for="webhook in webhooks" :key="webhook.id" class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-200">
+            <div class="flex items-start justify-between">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                  <h4 class="font-semibold text-slate-900">{{ webhook.name }}</h4>
+                  <span v-if="webhook.status === 'active'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-100 text-emerald-700 border border-emerald-200 rounded text-xs">
+                    <CheckCircle :size="12" />
+                    Active
+                  </span>
+                  <span v-else class="inline-flex items-center gap-1 px-2 py-0.5 bg-slate-100 text-slate-600 border border-slate-200 rounded text-xs">
+                    <Pause :size="12" />
+                    Paused
+                  </span>
+                </div>
+                <p class="text-sm text-slate-500 font-mono truncate mb-4">{{ webhook.url }}</p>
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span v-for="event in webhook.events" :key="event" class="px-2 py-0.5 border border-slate-200 rounded text-xs">{{ event }}</span>
                 </div>
               </div>
-              <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-3 text-sm text-slate-500 hover:text-slate-700">
-                <ChevronRight :size="16" :class="{ 'rotate-90': expandedWebhook === webhook.id }" class="transition-transform" />
-                View delivery logs ({{ webhook.delivery_logs.length }})
-              </button>
-              <div v-if="expandedWebhook === webhook.id" class="mt-4 border-t border-slate-100 pt-4">
-                <DeliveryLogs :logs="webhook.delivery_logs" />
+              <div class="flex flex-col items-end gap-2 ml-4">
+                <button class="text-slate-300 hover:text-[#611f69] transition-colors" aria-label="Webhook options">
+                  <ChevronRight :size="20" />
+                </button>
               </div>
+            </div>
+            <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-3 text-sm text-slate-500 hover:text-slate-700">
+              <ChevronRight :size="16" :class="{ 'rotate-90': expandedWebhook === webhook.id }" class="transition-transform" />
+              View delivery logs ({{ webhook.delivery_logs.length }})
+            </button>
+            <div v-if="expandedWebhook === webhook.id" class="mt-4 border-t border-slate-100 pt-4">
+              <DeliveryLogs :logs="webhook.delivery_logs" />
             </div>
           </div>
         </div>

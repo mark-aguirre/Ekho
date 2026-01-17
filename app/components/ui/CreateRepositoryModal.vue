@@ -43,30 +43,31 @@
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-900 mb-3">Visibility</label>
-            <p class="text-xs text-slate-500 mb-3">Using 1 of 1 private repositories. <a href="#" class="text-indigo-600 hover:text-indigo-700">Get more</a></p>
-            <div class="space-y-3">
-              <label class="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors" :class="visibility === 'public' ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'">
-                <input v-model="visibility" type="radio" value="public" class="mt-1" />
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1">
-                    <Globe :size="16" />
-                    <span class="font-medium text-slate-900">Public</span>
+            <label class="block text-sm font-medium text-slate-900 mb-2">Visibility</label>
+            <p class="text-sm text-slate-500 mb-3">Choose who can see and pull from this repository</p>
+            <div class="visibility-cards">
+              <label class="visibility-card" :class="{ selected: visibility === 'public' }">
+                <input v-model="visibility" type="radio" value="public" class="visibility-radio" />
+                <div class="visibility-content">
+                  <Globe :size="20" class="visibility-icon" />
+                  <div>
+                    <div class="visibility-label">Public</div>
+                    <div class="visibility-desc">Anyone can pull images from this repository</div>
                   </div>
-                  <p class="text-sm text-slate-600">Anyone can pull images from this repository</p>
                 </div>
               </label>
-              <label class="flex items-start gap-3 p-4 border-2 rounded-lg cursor-pointer transition-colors" :class="visibility === 'private' ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200 hover:border-slate-300'">
-                <input v-model="visibility" type="radio" value="private" class="mt-1" />
-                <div class="flex-1">
-                  <div class="flex items-center gap-2 mb-1">
-                    <Lock :size="16" />
-                    <span class="font-medium text-slate-900">Private</span>
+              <label class="visibility-card" :class="{ selected: visibility === 'private' }">
+                <input v-model="visibility" type="radio" value="private" class="visibility-radio" />
+                <div class="visibility-content">
+                  <Lock :size="20" class="visibility-icon" />
+                  <div>
+                    <div class="visibility-label">Private</div>
+                    <div class="visibility-desc">Only you and collaborators can access</div>
                   </div>
-                  <p class="text-sm text-slate-600">Only you and collaborators can access</p>
                 </div>
               </label>
             </div>
+            <p class="text-xs text-slate-500 mt-3">Using 1 of 1 private repositories. <a href="#" class="text-indigo-600 hover:text-indigo-700">Get more</a></p>
           </div>
 
           <div class="bg-slate-50 rounded-lg p-4 border border-slate-200">
@@ -188,3 +189,64 @@ const onCancel = () => {
   if (!loading.value) emit('cancel')
 }
 </script>
+
+<style scoped>
+.visibility-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.visibility-card {
+  position: relative;
+  padding: 14px 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 150ms;
+  background: white;
+}
+
+.visibility-card:hover {
+  border-color: #b8b8b8;
+  background: #f8f8f8;
+}
+
+.visibility-card.selected {
+  border-color: #611f69;
+  background: #f8f4f9;
+}
+
+.visibility-radio {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.visibility-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.visibility-icon {
+  color: #616061;
+  flex-shrink: 0;
+}
+
+.visibility-card.selected .visibility-icon {
+  color: #611f69;
+}
+
+.visibility-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1d1c1d;
+}
+
+.visibility-desc {
+  font-size: 13px;
+  color: #616061;
+  margin-top: 2px;
+}
+</style>

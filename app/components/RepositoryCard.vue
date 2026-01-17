@@ -7,7 +7,7 @@
       </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">
-          <NuxtLink :to="`/repository/${repository.id}`" class="font-semibold text-slate-900 truncate hover:text-indigo-600 transition-colors">
+          <NuxtLink :to="`/repository/${repository.id}`" class="font-semibold text-slate-900 truncate hover:text-[#611f69] transition-colors">
             {{ repository.name }}
           </NuxtLink>
           <span v-if="repository.visibility === 'public'" class="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded text-xs">
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="flex flex-col items-end gap-2 ml-4">
-        <NuxtLink :to="`/repository/${repository.id}`" class="text-slate-300 hover:text-indigo-500 transition-colors" aria-label="View repository">
+        <NuxtLink :to="`/repository/${repository.id}`" class="text-slate-300 hover:text-[#611f69] transition-colors" aria-label="View repository">
           <ChevronRight :size="20" />
         </NuxtLink>
         <span v-if="repository.last_pushed_at" class="flex items-center gap-1 text-xs text-slate-400">

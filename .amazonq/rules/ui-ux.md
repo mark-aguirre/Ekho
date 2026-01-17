@@ -18,8 +18,9 @@
 - Use a neutral color palette with accent colors for actions
 - Background: Light grays (#f8f8f8, #ffffff) for main areas
 - Borders: Subtle borders (#e0e0e0, #ddd)
-- Text: Dark gray (#1d1c1d) for primary, lighter grays for secondary
-- Accent: Purple/blue for primary actions, green for success, red for errors
+- Text: Dark gray (#1d1c1d) for primary, lighter grays (#616061) for secondary
+- Accent: Purple (#611f69) for primary actions, green (#2d9f5d) for success, red (#e01e5a) for errors
+- Selected states: Light purple background (#f8f4f9) with purple border
 
 ## Typography
 
@@ -39,14 +40,43 @@
 
 ### Cards
 - Subtle shadows (box-shadow: 0 1px 3px rgba(0,0,0,0.1))
-- Rounded corners (8px border-radius)
+- Rounded corners (6px-8px border-radius)
 - White background with light border
+
+### List Cards (Repositories, Webhooks, etc.)
+- Padding: 20px (p-5)
+- Border: 1px solid #e0e0e0, rounded-xl
+- Hover effects: border-color #b8b8b8, shadow-lg with shadow-slate-200/50
+- Transition: transition-all duration-200
+- Layout: flex with items-start justify-between
+- Title: font-semibold text-slate-900
+- Description: text-sm text-slate-500
+- Chevron icon on right: text-slate-300 hover:text-[#611f69]
+- Use consistent structure across all list views (repositories, webhooks, etc.)
+
+### Selection Cards
+- Use card-based selection for radio/checkbox groups
+- 2px borders (#e0e0e0) that change to accent color when selected
+- Hidden radio/checkbox inputs with visible card selection
+- Include icons (16px-20px) with labels and descriptions
+- Hover state: border-color #b8b8b8, background #f8f8f8
+- Selected state: border-color #611f69, background #f8f4f9
+- Padding: 12px-16px
+- Smooth transitions (150ms)
+- Icons change color to accent (#611f69) when selected
 
 ### Inputs
 - Clean borders with focus states
 - Border-radius: 4px
 - Padding: 8px 12px
 - Clear error states with red borders and helper text
+- Focus ring: 2px accent color (#611f69)
+
+### Help Text
+- Font size: 12px-13px
+- Color: #616061
+- Placed below labels or inputs
+- Use for descriptions and character counts
 
 ### Navigation
 - Sidebar navigation with clear active states
@@ -60,6 +90,8 @@
 - Toast notifications for feedback (top-right corner)
 - Confirmation modals for destructive actions
 - Hover states on all clickable elements
+- Card hover effects: subtle border and background changes
+- Icon color changes on selection/hover
 
 ## Accessibility
 
@@ -79,6 +111,8 @@
 ## Consistency
 
 - Reuse components across the application
-- Maintain consistent icon style and size
+- Maintain consistent icon style and size (16px-20px for UI elements)
 - Use the same interaction patterns throughout
 - Keep terminology consistent
+- Use card-based selection for all radio/checkbox groups in modals
+- Apply consistent color scheme: purple (#611f69) for primary, green (#2d9f5d) for success, red (#e01e5a) for errors
