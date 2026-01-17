@@ -12,25 +12,54 @@
           <input v-model="searchQuery" type="text" placeholder="Search repositories..." aria-label="Search repositories" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
         </div>
         <div class="flex gap-2">
-          <select v-model="visibilityFilter" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" aria-label="Filter by visibility">
-            <option value="all">All</option>
-            <option value="public">Public</option>
-            <option value="private">Private</option>
-          </select>
-          <select v-model="sortBy" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" aria-label="Sort repositories">
-            <option value="updated">Recently updated</option>
-            <option value="name">Name</option>
-            <option value="pulls">Most pulls</option>
-            <option value="stars">Most stars</option>
-          </select>
+          <div class="relative">
+            <button @click="visibilityOpen = !visibilityOpen" class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#611f69] bg-white" aria-label="Filter by visibility">
+              <Filter :size="16" class="text-slate-500" />
+              <span class="text-sm">{{ visibilityFilter === 'all' ? 'All' : visibilityFilter === 'public' ? 'Public' : 'Private' }}</span>
+              <ChevronDown :size="16" class="text-slate-400" />
+            </button>
+            <div v-if="visibilityOpen" class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10">
+              <button @click="visibilityFilter = 'all'; visibilityOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': visibilityFilter === 'all' }">
+                All
+              </button>
+              <button @click="visibilityFilter = 'public'; visibilityOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': visibilityFilter === 'public' }">
+                Public
+              </button>
+              <button @click="visibilityFilter = 'private'; visibilityOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': visibilityFilter === 'private' }">
+                Private
+              </button>
+            </div>
+          </div>
+          <div class="relative">
+            <button @click="sortOpen = !sortOpen" class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#611f69] bg-white" aria-label="Sort repositories">
+              <ArrowUpDown :size="16" class="text-slate-500" />
+              <span class="text-sm">{{ sortBy === 'updated' ? 'Recently updated' : sortBy === 'name' ? 'Name' : sortBy === 'pulls' ? 'Most pulls' : 'Most stars' }}</span>
+              <ChevronDown :size="16" class="text-slate-400" />
+            </button>
+            <div v-if="sortOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10">
+              <button @click="sortBy = 'updated'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'updated' }">
+                Recently updated
+              </button>
+              <button @click="sortBy = 'name'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'name' }">
+                Name
+              </button>
+              <button @click="sortBy = 'pulls'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'pulls' }">
+                Most pulls
+              </button>
+              <button @click="sortBy = 'stars'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'stars' }">
+                Most stars
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
     <div class="flex items-center justify-between mb-4">
       <p class="text-sm text-slate-500">{{ filteredRepositories.length }} {{ filteredRepositories.length === 1 ? 'repository' : 'repositories' }}</p>
-      <button @click="showCreateModal = true" class="text-sm text-[#611f69] hover:text-[#4a154b] font-medium hover:underline" aria-label="Create new repository">
-       + New repository
+      <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm transition-colors" aria-label="Create new repository">
+        <Plus :size="16" />
+        New Repository
       </button>
     </div>
 
@@ -57,8 +86,8 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { Search, Plus, Package } from 'lucide-vue-next'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { Search, Plus, Package, Filter, ArrowUpDown, ChevronDown } from 'lucide-vue-next'
 import CreateRepositoryModal from '~/components/ui/CreateRepositoryModal.vue'
 import { useToast } from '~/composables/useToast'
 
@@ -70,6 +99,8 @@ const searchQuery = ref('')
 const visibilityFilter = ref('all')
 const sortBy = ref('updated')
 const showCreateModal = ref(false)
+const visibilityOpen = ref(false)
+const sortOpen = ref(false)
 const { success } = useToast()
 
 const api = useApiClient()
@@ -104,4 +135,12 @@ const filteredRepositories = computed(() => {
       }
     })
 })
+
+const handleClickOutside = (e) => {
+  if (!e.target.closest('[aria-label="Filter by visibility"]')) visibilityOpen.value = false
+  if (!e.target.closest('[aria-label="Sort repositories"]')) sortOpen.value = false
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>

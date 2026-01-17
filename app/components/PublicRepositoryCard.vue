@@ -22,20 +22,25 @@
       </div>
     </div>
     <p class="text-sm text-slate-500 mb-4 line-clamp-2 flex-1">{{ repository.description || 'No description provided' }}</p>
-    <div class="flex items-center gap-4 text-xs text-slate-500 mb-3">
-      <span class="flex items-center gap-1">
-        <Tag :size="14" />
-        {{ repository.tags_count || 0 }}
+    <div class="flex items-center justify-between text-xs text-slate-500 mb-3">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1">
+          <Tag :size="14" />
+          {{ repository.tags_count || 0 }}
+        </span>
+        <span class="flex items-center gap-1">
+          <Download :size="14" />
+          {{ formatNumber(repository.pull_count) }}
+        </span>
+        <span class="flex items-center gap-1">
+          <Star :size="14" />
+          {{ repository.stars || 0 }}
+        </span>
+      </div>
+      <span v-if="repository.last_pushed_at" class="flex items-center gap-1 text-slate-400">
+        <Clock :size="12" />
+        {{ formatDistanceToNow(new Date(repository.last_pushed_at), { addSuffix: true }) }}
       </span>
-      <span class="flex items-center gap-1">
-        <Download :size="14" />
-        {{ formatNumber(repository.pull_count) }}
-      </span>
-      <span class="flex items-center gap-1">
-        <Star :size="14" />
-        {{ repository.stars || 0 }}
-      </span>
-      <span class="text-slate-400">{{ formatBytes(repository.storage_bytes) }}</span>
     </div>
     <div class="pt-3 border-t border-slate-100">
       <div class="flex items-center gap-2 bg-slate-50 rounded px-3 py-2 text-xs font-mono text-slate-700">
@@ -52,7 +57,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { Globe, Tag, Download, Star, User, Terminal, Copy, Check } from 'lucide-vue-next'
+import { Globe, Tag, Download, Star, User, Terminal, Copy, Check, Clock } from 'lucide-vue-next'
+import { formatDistanceToNow } from 'date-fns'
 
 const props = defineProps({
   repository: {
@@ -67,14 +73,6 @@ const copyCommand = async () => {
   await navigator.clipboard.writeText(`docker pull ${props.repository.name}`)
   copied.value = true
   setTimeout(() => copied.value = false, 2000)
-}
-
-const formatBytes = (bytes) => {
-  if (!bytes || bytes === 0) return '0 B'
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
 }
 
 const formatNumber = (num) => {

@@ -11,12 +11,27 @@
           <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
           <input v-model="searchQuery" type="text" placeholder="Search applications..." aria-label="Search applications" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
         </div>
-        <select v-model="sortBy" class="px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" aria-label="Sort repositories">
-          <option value="updated">Recently updated</option>
-          <option value="name">Name</option>
-          <option value="pulls">Most pulls</option>
-          <option value="stars">Most stars</option>
-        </select>
+        <div class="relative">
+          <button @click="sortOpen = !sortOpen" class="flex items-center gap-2 px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-[#611f69] bg-white" aria-label="Sort repositories">
+            <ArrowUpDown :size="16" class="text-slate-500" />
+            <span class="text-sm">{{ sortBy === 'updated' ? 'Recently updated' : sortBy === 'name' ? 'Name' : sortBy === 'pulls' ? 'Most pulls' : 'Most stars' }}</span>
+            <ChevronDown :size="16" class="text-slate-400" />
+          </button>
+          <div v-if="sortOpen" class="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-10">
+            <button @click="sortBy = 'updated'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'updated' }">
+              Recently updated
+            </button>
+            <button @click="sortBy = 'name'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'name' }">
+              Name
+            </button>
+            <button @click="sortBy = 'pulls'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'pulls' }">
+              Most pulls
+            </button>
+            <button @click="sortBy = 'stars'; sortOpen = false" class="w-full text-left px-3 py-2 text-sm hover:bg-slate-50" :class="{ 'text-[#611f69] font-medium': sortBy === 'stars' }">
+              Most stars
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -41,11 +56,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import { Search, Package } from 'lucide-vue-next'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { Search, Package, ArrowUpDown, ChevronDown } from 'lucide-vue-next'
 
 const searchQuery = ref('')
 const sortBy = ref('updated')
+const sortOpen = ref(false)
 
 const api = useApiClient()
 const { data: repositories, pending } = await api.repositories.getPublic()
@@ -72,4 +88,11 @@ const filteredRepositories = computed(() => {
       }
     })
 })
+
+const handleClickOutside = (e) => {
+  if (!e.target.closest('[aria-label="Sort repositories"]')) sortOpen.value = false
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>

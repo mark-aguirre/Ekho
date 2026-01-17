@@ -1,7 +1,7 @@
 <template>
   <div class="w-[80%] mx-auto px-6 py-8">
     <div class="mb-6">
-      <NuxtLink to="/" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700" aria-label="Back to repositories">
+      <NuxtLink to="/repositories" class="inline-flex items-center text-sm text-slate-500 hover:text-slate-700" aria-label="Back to repositories">
         <ArrowLeft :size="16" class="mr-1" />
         Back to Repositories
       </NuxtLink>
@@ -16,7 +16,7 @@
     <div v-else-if="!repository" class="text-center py-16">
       <h2 class="text-xl font-semibold text-slate-900 mb-2">Repository not found</h2>
       <p class="text-slate-500 mb-6">The repository you're looking for doesn't exist.</p>
-      <NuxtLink to="/" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
+      <NuxtLink to="/repositories" class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
         <ArrowLeft :size="16" />
         Back to Repositories
       </NuxtLink>

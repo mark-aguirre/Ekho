@@ -26,27 +26,29 @@
       </div>
     </div>
     <p class="text-sm text-slate-500 mb-4 line-clamp-2 flex-1">{{ repository.description || 'No description provided' }}</p>
-    <div class="flex items-center gap-4 text-xs text-slate-500 mb-2">
-      <span class="flex items-center gap-1">
-        <Tag :size="14" />
-        {{ repository.tags_count || 0 }}
-      </span>
-      <span class="flex items-center gap-1">
-        <Download :size="14" />
-        {{ formatNumber(repository.pull_count) }}
-      </span>
-      <span class="flex items-center gap-1">
-        <Star :size="14" />
-        {{ repository.stars || 0 }}
-      </span>
-      <span class="text-slate-400">{{ formatBytes(repository.storage_bytes) }}</span>
-    </div>
-    <div class="flex items-center justify-between pt-2 border-t border-slate-100">
-      <span v-if="repository.last_pushed_at" class="flex items-center gap-1 text-xs text-slate-400">
+    <div class="flex items-center justify-between text-xs text-slate-500 mb-2">
+      <div class="flex items-center gap-4">
+        <span class="flex items-center gap-1">
+          <Tag :size="14" />
+          {{ repository.tags_count || 0 }}
+        </span>
+        <span class="flex items-center gap-1">
+          <Download :size="14" />
+          {{ formatNumber(repository.pull_count) }}
+        </span>
+        <span class="flex items-center gap-1">
+          <Star :size="14" />
+          {{ repository.stars || 0 }}
+        </span>
+        <span class="text-slate-400">{{ formatBytes(repository.storage_bytes) }}</span>
+      </div>
+      <span v-if="repository.last_pushed_at" class="flex items-center gap-1 text-slate-400">
         <Clock :size="12" />
         {{ formatDistanceToNow(new Date(repository.last_pushed_at), { addSuffix: true }) }}
       </span>
-      <NuxtLink :to="`/repository/${repository.id}`" class="text-slate-300 hover:text-[#611f69] transition-colors ml-auto" aria-label="View repository">
+    </div>
+    <div class="flex items-center justify-end pt-2 border-t border-slate-100">
+      <NuxtLink :to="`/repository/${repository.id}`" class="text-slate-300 hover:text-[#611f69] transition-colors" aria-label="View repository">
         <ChevronRight :size="20" />
       </NuxtLink>
     </div>
