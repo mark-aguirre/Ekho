@@ -25,15 +25,16 @@
             </button>
             <div v-if="user" class="relative" @keydown.esc="userMenuOpen = false">
               <button @click="userMenuOpen = !userMenuOpen" class="flex items-center gap-2 px-3 py-2 text-slate-700 hover:bg-slate-100 rounded-lg" aria-label="User menu" aria-expanded="userMenuOpen" aria-haspopup="true">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center">
-                  <User :size="16" class="text-slate-600" />
+                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-slate-200 to-slate-300 flex items-center justify-center overflow-hidden">
+                  <img v-if="user.picture" :src="user.picture" :alt="user.name" class="w-full h-full object-cover" />
+                  <User v-else :size="16" class="text-slate-600" />
                 </div>
-                <span class="hidden md:inline text-sm font-medium">{{ user.full_name || user.email?.split('@')[0] }}</span>
+                <span class="hidden md:inline text-sm font-medium">{{ user.name || user.email?.split('@')[0] }}</span>
                 <ChevronDown :size="16" />
               </button>
               <div v-if="userMenuOpen" class="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-slate-200 py-1" role="menu">
                 <div class="px-3 py-2 border-b border-slate-100">
-                  <p class="text-sm font-medium text-slate-900">{{ user.full_name }}</p>
+                  <p class="text-sm font-medium text-slate-900">{{ user.name }}</p>
                   <p class="text-xs text-slate-500">{{ user.email }}</p>
                 </div>
                 <NuxtLink to="/settings" class="flex items-center gap-2 px-3 py-2 text-sm text-slate-700 hover:bg-slate-50">
@@ -66,7 +67,7 @@
           </NuxtLink>
           <div v-if="user" class="border-t border-slate-200 pt-2 mt-2">
             <div class="px-3 py-2 mb-2">
-              <p class="text-sm font-medium text-slate-900">{{ user.full_name }}</p>
+              <p class="text-sm font-medium text-slate-900">{{ user.name }}</p>
               <p class="text-xs text-slate-500">{{ user.email }}</p>
             </div>
             <NuxtLink @click="mobileMenuOpen = false" to="/settings" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-slate-50">
@@ -97,8 +98,18 @@ import { useToast } from '~/composables/useToast'
 const searchQuery = ref('')
 const mobileMenuOpen = ref(false)
 const userMenuOpen = ref(false)
-const user = ref({ full_name: 'John Doe', email: 'john@example.com' })
+const user = ref(null)
 const { toasts } = useToast()
+
+onMounted(() => {
+  // Get user from cookie
+  const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='))
+  if (userCookie) {
+    user.value = JSON.parse(decodeURIComponent(userCookie.split('=')[1]))
+  }
+  document.addEventListener('click', handleClickOutside)
+})
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
 const handleClickOutside = (e) => {
   if (userMenuOpen.value && !e.target.closest('[aria-haspopup="true"]')) {
@@ -106,11 +117,10 @@ const handleClickOutside = (e) => {
   }
 }
 
-onMounted(() => document.addEventListener('click', handleClickOutside))
-onUnmounted(() => document.removeEventListener('click', handleClickOutside))
-
 const handleLogout = () => {
+  document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
   user.value = null
   userMenuOpen.value = false
+  navigateTo('/')
 }
 </script>

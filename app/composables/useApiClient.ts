@@ -57,9 +57,18 @@ export const useApiClient = () => {
       }
     },
     user: {
-      getProfile: () => useFetch<UserProfile>('/api/user/profile', { key: 'user-profile' }),
-      getSubscription: () => useFetch<Subscription>('/api/user/subscription', { key: 'user-subscription' }),
-      getUsage: () => useFetch<Usage>('/api/user/usage', { key: 'user-usage' })
+      getProfile: async () => {
+        const { data } = await useFetch<UserProfile>('/api/user/profile', { key: 'user-profile' })
+        return data.value
+      },
+      getSubscription: async () => {
+        const { data } = await useFetch<Subscription>('/api/user/subscription', { key: 'user-subscription' })
+        return data.value
+      },
+      getUsage: async () => {
+        const { data } = await useFetch<Usage>('/api/user/usage', { key: 'user-usage' })
+        return data.value
+      }
     }
   }
 }
