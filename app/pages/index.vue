@@ -6,17 +6,17 @@
     <div class="absolute bottom-20 left-1/2 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
     
     <div class="relative z-10 min-h-screen flex flex-col">
-    <nav class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <header class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 py-4">
         <div class="flex items-center gap-2">
-          <Container :size="28" class="text-[#611f69]" />
+          <Container :size="20" class="text-[#611f69]" />
           <span class="text-xl font-bold text-slate-900">Ekho</span>
         </div>
       </div>
-    </nav>
+    </header>
 
     <main class="flex-1 flex items-center">
-      <section class="max-w-7xl mx-auto px-6 py-20 lg:py-32 w-full">
+      <section class="max-w-7xl mx-auto px-6 py-20 lg:py-32 w-full" aria-label="Hero section">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
           <div>
             <h1 class="text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
@@ -26,7 +26,7 @@
             <p class="text-lg text-slate-600 mb-8 leading-relaxed">
               Store, manage, and deploy your Docker images with enterprise-grade security and lightning-fast performance.
             </p>
-            <button @click="login" class="inline-flex items-center justify-center gap-3 px-8 py-4 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg transition-all duration-200 shadow-md hover:shadow-lg">
+            <button @click="login" class="inline-flex items-center justify-center gap-3 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-md transition-all duration-200 shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-[#611f69] focus:ring-offset-2" aria-label="Sign in with Google">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
                 <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
                 <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
@@ -39,7 +39,7 @@
           </div>
 
           <div class="relative">
-            <div class="bg-white rounded-xl shadow-2xl border border-slate-200 p-8">
+            <div class="bg-white rounded-xl shadow-2xl border border-slate-200 p-8 hover:border-slate-300 hover:shadow-3xl transition-all duration-200">
               <div class="space-y-6">
                 <div class="flex items-start gap-4">
                   <div class="w-12 h-12 rounded-lg bg-[#f8f4f9] flex items-center justify-center flex-shrink-0">
@@ -90,7 +90,7 @@
 
     <footer class="border-t border-slate-200 bg-white py-8">
       <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
-        <p>&copy; 2024 Ekho. All rights reserved.</p>
+        <p>&copy; {{ new Date().getFullYear() }} Ekho. All rights reserved.</p>
       </div>
     </footer>
     </div>

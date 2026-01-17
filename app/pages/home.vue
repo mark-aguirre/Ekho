@@ -59,6 +59,10 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Search, Package, ArrowUpDown, ChevronDown } from 'lucide-vue-next'
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const searchQuery = ref('')
 const sortBy = ref('updated')
 const sortOpen = ref(false)

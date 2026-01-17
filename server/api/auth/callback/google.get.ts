@@ -38,7 +38,7 @@ export default defineEventHandler(async (event) => {
       maxAge: 60 * 60 * 24 * 7 // 7 days
     })
 
-    return sendRedirect(event, '/dashboard')
+    return sendRedirect(event, '/home')
   } catch (error) {
     console.error('Auth error:', error)
     return sendRedirect(event, '/')
