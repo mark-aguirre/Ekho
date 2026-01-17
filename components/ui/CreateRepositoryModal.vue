@@ -26,6 +26,23 @@
           </div>
 
           <div>
+            <label class="block text-sm font-medium text-slate-900 mb-2">Logo</label>
+            <div class="flex items-center justify-center gap-4">
+              <div>
+                <input ref="fileInput" type="file" accept="image/*" @change="handleFileChange" class="hidden" />
+                <button @click="$refs.fileInput.click()" type="button" class="px-4 py-2 border border-slate-200 rounded-lg hover:bg-slate-50 text-sm font-medium">
+                  {{ logoPreview ? 'Change Logo' : 'Upload Logo' }}
+                </button>
+                <p class="mt-1 text-xs text-slate-500">PNG, JPG or GIF (max 2MB)</p>
+              </div>
+              <div v-if="logoPreview" class="flex items-center gap-3">
+                <img :src="logoPreview" alt="Logo preview" class="w-16 h-16 rounded-lg object-cover border-2 border-slate-200" />
+                <button @click="removeLogo" type="button" class="text-sm text-red-600 hover:text-red-700">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <label class="block text-sm font-medium text-slate-900 mb-3">Visibility</label>
             <p class="text-xs text-slate-500 mb-3">Using 1 of 1 private repositories. <a href="#" class="text-indigo-600 hover:text-indigo-700">Get more</a></p>
             <div class="space-y-3">
@@ -88,9 +105,12 @@ const props = defineProps({
 const emit = defineEmits(['create', 'cancel'])
 
 const nameInput = ref(null)
+const fileInput = ref(null)
 const repoName = ref('')
 const description = ref('')
 const visibility = ref('private')
+const logoFile = ref(null)
+const logoPreview = ref('')
 const loading = ref(false)
 const errors = ref({})
 
@@ -99,6 +119,8 @@ watch(() => props.isOpen, async (newVal) => {
     repoName.value = ''
     description.value = ''
     visibility.value = 'private'
+    logoFile.value = null
+    logoPreview.value = ''
     errors.value = {}
     loading.value = false
     await nextTick()
@@ -130,6 +152,23 @@ const validateName = () => {
 
 const validateForm = () => validateName()
 
+const handleFileChange = (e) => {
+  const file = e.target.files[0]
+  if (!file) return
+  if (file.size > 2 * 1024 * 1024) {
+    alert('File size must be less than 2MB')
+    return
+  }
+  logoFile.value = file
+  logoPreview.value = URL.createObjectURL(file)
+}
+
+const removeLogo = () => {
+  logoFile.value = null
+  logoPreview.value = ''
+  if (fileInput.value) fileInput.value.value = ''
+}
+
 const handleCreate = async () => {
   if (!validateForm()) return
   loading.value = true
@@ -137,7 +176,8 @@ const handleCreate = async () => {
     await emit('create', {
       name: repoName.value.trim(),
       description: description.value.trim(),
-      visibility: visibility.value
+      visibility: visibility.value,
+      logo: logoFile.value
     })
   } catch (e) {
     loading.value = false

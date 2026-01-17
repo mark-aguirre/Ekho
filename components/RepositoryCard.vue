@@ -1,6 +1,10 @@
 <template>
   <div class="bg-white rounded-xl border border-slate-200 p-5 hover:border-slate-300 hover:shadow-lg hover:shadow-slate-200/50 transition-all duration-200">
     <div class="flex items-start justify-between">
+      <img v-if="repository.logo" :src="repository.logo" :alt="repository.name" class="w-12 h-12 rounded-lg object-cover mr-4 flex-shrink-0" />
+      <div v-else class="w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4 flex-shrink-0">
+        {{ repository.name.charAt(0).toUpperCase() }}
+      </div>
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 mb-1">
           <NuxtLink :to="`/repository/${repository.id}`" class="font-semibold text-slate-900 truncate hover:text-indigo-600 transition-colors">
@@ -15,6 +19,10 @@
             Private
           </span>
         </div>
+        <p v-if="repository.owner" class="text-xs text-slate-500 mb-2 flex items-center gap-1">
+          <User :size="12" />
+          {{ repository.owner }}
+        </p>
         <p class="text-sm text-slate-500 mb-4 line-clamp-2">{{ repository.description || 'No description provided' }}</p>
         <div class="flex items-center gap-4 text-xs text-slate-500">
           <span class="flex items-center gap-1">
@@ -46,7 +54,7 @@
 </template>
 
 <script setup>
-import { Globe, Lock, Tag, Download, Star, Clock, ChevronRight } from 'lucide-vue-next'
+import { Globe, Lock, Tag, Download, Star, Clock, ChevronRight, User } from 'lucide-vue-next'
 import { formatDistanceToNow } from 'date-fns'
 
 defineProps({

@@ -64,6 +64,20 @@
             <Package :size="16" />
             Repositories
           </NuxtLink>
+          <div v-if="user" class="border-t border-slate-200 pt-2 mt-2">
+            <div class="px-3 py-2 mb-2">
+              <p class="text-sm font-medium text-slate-900">{{ user.full_name }}</p>
+              <p class="text-xs text-slate-500">{{ user.email }}</p>
+            </div>
+            <NuxtLink @click="mobileMenuOpen = false" to="/settings" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-700 hover:bg-slate-50">
+              <Settings :size="16" />
+              Settings
+            </NuxtLink>
+            <button @click="handleLogout(); mobileMenuOpen = false" class="flex items-center gap-2 w-full px-3 py-2 rounded-lg text-sm text-red-600 hover:bg-slate-50">
+              <LogOut :size="16" />
+              Sign out
+            </button>
+          </div>
         </div>
       </div>
     </header>
