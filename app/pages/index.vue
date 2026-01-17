@@ -37,8 +37,8 @@
       <p class="text-sm text-slate-500">{{ filteredRepositories.length }} {{ filteredRepositories.length === 1 ? 'repository' : 'repositories' }}</p>
     </div>
 
-    <div v-if="pending" class="space-y-4">
-      <div v-for="i in 5" :key="i" class="h-32 bg-slate-100 rounded-xl animate-pulse" />
+    <div v-if="pending" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div v-for="i in 6" :key="i" class="h-64 bg-slate-100 rounded-xl animate-pulse" />
     </div>
 
     <div v-else-if="filteredRepositories.length === 0" class="text-center py-16 bg-white rounded-xl border border-slate-200">
@@ -51,7 +51,7 @@
       </button>
     </div>
 
-    <div v-else class="space-y-3">
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       <RepositoryCard v-for="repo in filteredRepositories" :key="repo.id" :repository="repo" />
     </div>
 
