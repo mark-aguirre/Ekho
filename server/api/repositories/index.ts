@@ -1,6 +1,7 @@
 import { defineEventHandler } from 'h3'
+import type { Repository } from '~/types/repository'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler((event): Repository[] => {
   return [
     {
       id: '1',

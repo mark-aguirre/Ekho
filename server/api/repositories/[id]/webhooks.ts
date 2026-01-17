@@ -1,6 +1,7 @@
 import { createError, defineEventHandler, getRouterParam } from "h3"
+import type { Webhook } from '~/types/repository'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler((event): Webhook[] => {
   const id = getRouterParam(event, 'id')
   if (!id) {
     throw createError({ statusCode: 400, message: 'Repository ID is required' })

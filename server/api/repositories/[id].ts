@@ -1,9 +1,10 @@
 import { defineEventHandler, getRouterParam } from "h3"
+import type { Repository } from '~/types/repository'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler((event): Repository | null => {
   const id = getRouterParam(event, 'id')
   
-  const repositories = {
+  const repositories: Record<string, Repository> = {
     '1': {
       id: '1',
       name: 'acme/web-app',

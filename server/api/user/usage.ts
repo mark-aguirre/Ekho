@@ -1,18 +1,13 @@
 import { defineEventHandler } from 'h3'
+import type { Usage } from '~/types/user'
 
-export default defineEventHandler(() => {
+export default defineEventHandler((): Usage => {
   return {
-    storage: {
-      used: '12.4 GB',
-      limit: '50 GB',
-      percentage: 25
-    },
-    bandwidth: {
-      used: '145 GB',
-      limit: '500 GB',
-      percentage: 29
-    },
-    repositories: 12,
-    totalPulls: 45600
+    storage_used: 13316710195,
+    storage_limit: 53687091200,
+    bandwidth_used: 155713126195,
+    bandwidth_limit: 536870912000,
+    repositories_count: 12,
+    repositories_limit: 100
   }
 })

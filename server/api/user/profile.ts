@@ -1,6 +1,7 @@
 import { defineEventHandler } from 'h3'
+import type { UserProfile } from '~/types/user'
 
-export default defineEventHandler(() => {
+export default defineEventHandler((): UserProfile => {
   return {
     fullName: 'John Doe',
     email: 'john@example.com',

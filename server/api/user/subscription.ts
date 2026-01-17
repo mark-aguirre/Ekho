@@ -1,12 +1,12 @@
 import { defineEventHandler } from 'h3'
+import type { Subscription } from '~/types/user'
 
-export default defineEventHandler(() => {
+export default defineEventHandler((): Subscription => {
   return {
-    plan: 'Pro',
-    status: 'Active',
-    description: 'Perfect for growing teams and production workloads',
-    billingCycle: 'Monthly',
-    nextRenewal: 'Feb 15, 2024',
-    price: '$29/month'
+    plan: 'pro',
+    status: 'active',
+    billing_cycle: 'monthly',
+    next_billing_date: 'Feb 15, 2024',
+    amount: 29
   }
 })

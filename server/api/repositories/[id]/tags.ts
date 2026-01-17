@@ -1,6 +1,7 @@
 import { defineEventHandler, getRouterParam } from 'h3'
+import type { Tag } from '~/types/repository'
 
-export default defineEventHandler((event) => {
+export default defineEventHandler((event): Tag[] => {
   const id = getRouterParam(event, 'id')
   
   return [

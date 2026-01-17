@@ -207,10 +207,28 @@
                   </div>
                 </div>
               </div>
-              <button v-if="webhook.delivery_logs?.length > 0" class="flex items-center gap-1 mt-3 text-sm text-slate-500 hover:text-slate-700">
-                <ChevronRight :size="16" />
+              <button v-if="webhook.delivery_logs?.length > 0" @click="toggleDeliveryLogs(webhook.id)" class="flex items-center gap-1 mt-3 text-sm text-slate-500 hover:text-slate-700">
+                <ChevronRight :size="16" :class="{ 'rotate-90': expandedWebhook === webhook.id }" class="transition-transform" />
                 View delivery logs ({{ webhook.delivery_logs.length }})
               </button>
+              <div v-if="expandedWebhook === webhook.id" class="mt-4 border-t border-slate-100 pt-4">
+                <div class="space-y-2">
+                  <div v-for="(log, idx) in webhook.delivery_logs" :key="idx" class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+                    <div class="flex items-center gap-3">
+                      <CheckCircle v-if="log.success" :size="16" class="text-emerald-600" />
+                      <XCircle v-else :size="16" class="text-red-600" />
+                      <div>
+                        <p class="text-sm font-medium text-slate-900">{{ log.event }}</p>
+                        <p class="text-xs text-slate-500">{{ formatTimestamp(log.timestamp) }}</p>
+                      </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-xs text-slate-600">
+                      <span :class="log.success ? 'text-emerald-600' : 'text-red-600'">{{ log.status_code }}</span>
+                      <span>{{ log.response_time_ms }}ms</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -318,14 +336,14 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield } from 'lucide-vue-next'
+import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield, XCircle } from 'lucide-vue-next'
 import ActivityTimeline from '~/components/registry/ActivityTimeline.vue'
 import TagsTable from '~/components/registry/TagsTable.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import { useToast } from '~/composables/useToast'
 
 const route = useRoute()
-const repositoryId = route.params.id
+const repositoryId = String(route.params.id)
 
 const activeTab = ref('overview')
 const moreMenuOpen = ref(false)
@@ -335,6 +353,7 @@ const copied = ref(false)
 const copiedTag = ref(false)
 const copiedPush = ref(false)
 const showDeleteDialog = ref(false)
+const expandedWebhook = ref(null)
 const { success, error } = useToast()
 
 const apiClient = useApiClient()
@@ -422,5 +441,19 @@ const formatNumber = (num) => {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M'
   if (num >= 1000) return (num / 1000).toFixed(1) + 'K'
   return num.toString()
+}
+
+const toggleDeliveryLogs = (webhookId) => {
+  expandedWebhook.value = expandedWebhook.value === webhookId ? null : webhookId
+}
+
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp)
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const hours = Math.floor(diff / 3600000)
+  if (hours < 1) return 'Just now'
+  if (hours < 24) return `${hours}h ago`
+  return `${Math.floor(hours / 24)}d ago`
 }
 </script>

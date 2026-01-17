@@ -27,12 +27,12 @@
             <button @click="retrySubscription" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium">Retry</button>
           </div>
           <div v-else-if="subscription" class="bg-white rounded-xl border border-slate-200 p-4 sm:p-6">
-            <div v-if="usage && (usage.storage.percentage > 90 || usage.bandwidth.percentage > 90)" class="mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
+            <div v-if="usagePercentages && (usagePercentages.storage.percentage > 90 || usagePercentages.bandwidth.percentage > 90)" class="mb-4 bg-amber-50 border border-amber-200 rounded-lg p-3 sm:p-4">
               <div class="flex items-start gap-2 sm:gap-3">
                 <AlertTriangle :size="18" class="sm:w-5 sm:h-5 text-amber-600 mt-0.5 flex-shrink-0" />
                 <div class="text-xs sm:text-sm text-amber-900">
                   <p class="font-medium mb-1">Approaching Limits</p>
-                  <p>You're running low on {{ usage.storage.percentage > 90 ? 'storage' : 'bandwidth' }}. Consider upgrading to avoid service interruption.</p>
+                  <p>You're running low on {{ usagePercentages.storage.percentage > 90 ? 'storage' : 'bandwidth' }}. Consider upgrading to avoid service interruption.</p>
                 </div>
               </div>
             </div>
@@ -50,30 +50,30 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
               <div class="p-3 sm:p-4 bg-slate-50 rounded-lg">
                 <p class="text-xs sm:text-sm text-slate-600 mb-1">Billing Cycle</p>
-                <p class="text-base sm:text-lg font-semibold text-slate-900">{{ subscription.billingCycle }}</p>
+                <p class="text-base sm:text-lg font-semibold text-slate-900 capitalize">{{ subscription.billing_cycle }}</p>
               </div>
               <div class="p-3 sm:p-4 bg-slate-50 rounded-lg">
                 <p class="text-xs sm:text-sm text-slate-600 mb-1">Next Renewal</p>
-                <p class="text-base sm:text-lg font-semibold text-slate-900">{{ subscription.nextRenewal }}</p>
+                <p class="text-base sm:text-lg font-semibold text-slate-900">{{ subscription.next_billing_date }}</p>
               </div>
             </div>
-            <div v-if="usage" class="space-y-4">
+            <div v-if="usagePercentages" class="space-y-4">
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="text-slate-600">Storage Used</span>
-                  <span class="font-medium text-slate-900">{{ usage.storage.used }} / {{ usage.storage.limit }}</span>
+                  <span class="font-medium text-slate-900">{{ usagePercentages.storage.used }} / {{ usagePercentages.storage.limit }}</span>
                 </div>
                 <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all" :class="usage.storage.percentage > 90 ? 'bg-red-600' : usage.storage.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usage.storage.percentage}%`"></div>
+                  <div class="h-full rounded-full transition-all" :class="usagePercentages.storage.percentage > 90 ? 'bg-red-600' : usagePercentages.storage.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usagePercentages.storage.percentage}%`"></div>
                 </div>
               </div>
               <div>
                 <div class="flex justify-between text-sm mb-2">
                   <span class="text-slate-600">Bandwidth (Monthly)</span>
-                  <span class="font-medium text-slate-900">{{ usage.bandwidth.used }} / {{ usage.bandwidth.limit }}</span>
+                  <span class="font-medium text-slate-900">{{ usagePercentages.bandwidth.used }} / {{ usagePercentages.bandwidth.limit }}</span>
                 </div>
                 <div class="h-2 bg-slate-200 rounded-full overflow-hidden">
-                  <div class="h-full rounded-full transition-all" :class="usage.bandwidth.percentage > 90 ? 'bg-red-600' : usage.bandwidth.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usage.bandwidth.percentage}%`"></div>
+                  <div class="h-full rounded-full transition-all" :class="usagePercentages.bandwidth.percentage > 90 ? 'bg-red-600' : usagePercentages.bandwidth.percentage > 75 ? 'bg-yellow-600' : 'bg-indigo-600'" :style="`width: ${usagePercentages.bandwidth.percentage}%`"></div>
                 </div>
               </div>
             </div>
@@ -316,7 +316,7 @@
 
     <PricingPlansModal :isOpen="showPricingModal" :currentPlan="subscription?.plan?.toLowerCase()" @cancel="showPricingModal = false" @select="handlePlanSelect" />
     <PaymentModal :isOpen="showPaymentModal" :selectedPlan="selectedPlanData" :billingCycle="selectedPlanData?.billingCycle" @cancel="showPaymentModal = false" @confirm="handlePaymentConfirm" />
-    <CancelSubscriptionModal :isOpen="showCancelModal" :currentUsage="usage?.storage?.used" @cancel="showCancelModal = false" @confirm="handleCancelSubscription" @acceptOffer="handleAcceptOffer" />
+    <CancelSubscriptionModal :isOpen="showCancelModal" :currentUsage="usagePercentages?.storage?.used" @cancel="showCancelModal = false" @confirm="handleCancelSubscription" @acceptOffer="handleAcceptOffer" />
   </div>
 </template>
 
@@ -349,6 +349,8 @@ const tabs = [
   { id: 'privacy', label: 'Privacy', icon: Lock }
 ]
 
+const api = useApiClient()
+
 const loadingSubscription = ref(true)
 const errorSubscription = ref(null)
 const loadingProfile = ref(true)
@@ -357,9 +359,32 @@ const subscription = ref(null)
 const profile = ref(null)
 const usage = ref(null)
 
+const usagePercentages = computed(() => {
+  if (!usage.value) return null
+  return {
+    storage: {
+      used: formatBytes(usage.value.storage_used),
+      limit: formatBytes(usage.value.storage_limit),
+      percentage: Math.round((usage.value.storage_used / usage.value.storage_limit) * 100)
+    },
+    bandwidth: {
+      used: formatBytes(usage.value.bandwidth_used),
+      limit: formatBytes(usage.value.bandwidth_limit),
+      percentage: Math.round((usage.value.bandwidth_used / usage.value.bandwidth_limit) * 100)
+    }
+  }
+})
+
+const formatBytes = (bytes) => {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i]
+}
+
 if (process.client) {
-  fetch('/api/user/subscription')
-    .then(res => res.json())
+  api.user.getSubscription()
     .then(data => {
       subscription.value = data
       loadingSubscription.value = false
@@ -369,8 +394,7 @@ if (process.client) {
       loadingSubscription.value = false
     })
 
-  fetch('/api/user/profile')
-    .then(res => res.json())
+  api.user.getProfile()
     .then(data => {
       profile.value = data
       profileForm.value = { fullName: data.fullName, email: data.email }
@@ -381,16 +405,14 @@ if (process.client) {
       loadingProfile.value = false
     })
 
-  fetch('/api/user/usage')
-    .then(res => res.json())
+  api.user.getUsage()
     .then(data => usage.value = data)
 }
 
 const retrySubscription = () => {
   loadingSubscription.value = true
   errorSubscription.value = null
-  fetch('/api/user/subscription')
-    .then(res => res.json())
+  api.user.getSubscription()
     .then(data => {
       subscription.value = data
       loadingSubscription.value = false
@@ -404,8 +426,7 @@ const retrySubscription = () => {
 const retryProfile = () => {
   loadingProfile.value = true
   errorProfile.value = null
-  fetch('/api/user/profile')
-    .then(res => res.json())
+  api.user.getProfile()
     .then(data => {
       profile.value = data
       profileForm.value = { fullName: data.fullName, email: data.email }
