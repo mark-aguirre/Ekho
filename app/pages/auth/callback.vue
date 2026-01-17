@@ -13,9 +13,9 @@ onMounted(() => {
   const code = urlParams.get('code')
   
   if (code) {
-    // Store auth code and redirect to dashboard
+    // Store auth code and redirect to home
     // In production, exchange code for tokens on backend
-    navigateTo('/dashboard')
+    navigateTo('/home')
   } else {
     navigateTo('/')
   }

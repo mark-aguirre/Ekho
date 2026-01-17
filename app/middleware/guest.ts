@@ -3,7 +3,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
     const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='))
     
     if (userCookie) {
-      return navigateTo('/dashboard', { replace: true })
+      return navigateTo('/home', { replace: true })
     }
   }
 })
