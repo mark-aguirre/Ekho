@@ -6,6 +6,7 @@ export const useApiClient = () => {
   return {
     repositories: {
       getAll: () => useFetch<Repository[]>('/api/repositories', { key: 'repositories' }),
+      getPublic: () => useFetch<Repository[]>('/api/repositories/public', { key: 'public-repositories' }),
       getById: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
         return useFetch<Repository>(`/api/repositories/${id}`, { key: `repository-${id}` })
