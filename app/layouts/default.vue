@@ -11,6 +11,12 @@
               <span class="font-semibold text-slate-900 text-lg tracking-tight">Ekho</span>
             </NuxtLink>
             <nav class="hidden md:flex items-center gap-1" aria-label="Main navigation">
+              <NuxtLink to="/home" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#611f69] hover:bg-slate-50 rounded-lg transition-colors">
+                Applications
+              </NuxtLink>
+              <NuxtLink to="/repositories" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#611f69] hover:bg-slate-50 rounded-lg transition-colors">
+                My Repositories
+              </NuxtLink>
             </nav>
           </div>
           <div class="hidden md:flex flex-1 max-w-md mx-8">
@@ -61,9 +67,13 @@
             <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input v-model="searchQuery" type="text" placeholder="Search repositories..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
           </div>
-          <NuxtLink @click="mobileMenuOpen = false" to="/" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+          <NuxtLink @click="mobileMenuOpen = false" to="/home" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
             <Package :size="16" />
-            Repositories
+            Applications
+          </NuxtLink>
+          <NuxtLink @click="mobileMenuOpen = false" to="/repositories" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+            <Package :size="16" />
+            My Repositories
           </NuxtLink>
           <div v-if="user" class="border-t border-slate-200 pt-2 mt-2">
             <div class="px-3 py-2 mb-2">
