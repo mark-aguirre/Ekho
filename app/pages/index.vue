@@ -8,15 +8,9 @@
     <div class="relative z-10 min-h-screen flex flex-col">
     <nav class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-2">
-            <Container :size="28" class="text-[#611f69]" />
-            <span class="text-xl font-bold text-slate-900">Ekho</span>
-          </div>
-          <div class="flex items-center gap-4">
-            <NuxtLink to="/home" class="text-sm text-slate-600 hover:text-[#611f69]">Browse Applications</NuxtLink>
-            <button @click="login" class="px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm">Sign In</button>
-          </div>
+        <div class="flex items-center gap-2">
+          <Container :size="28" class="text-[#611f69]" />
+          <span class="text-xl font-bold text-slate-900">Ekho</span>
         </div>
       </div>
     </nav>
@@ -58,6 +52,15 @@
                 </div>
                 <div class="flex items-start gap-4">
                   <div class="w-12 h-12 rounded-lg bg-[#f8f4f9] flex items-center justify-center flex-shrink-0">
+                    <Package :size="20" class="text-[#611f69]" />
+                  </div>
+                  <div>
+                    <h3 class="font-semibold text-slate-900 mb-1">Free Community Applications</h3>
+                    <p class="text-sm text-slate-600">Discover and use applications shared by the community</p>
+                  </div>
+                </div>
+                <div class="flex items-start gap-4">
+                  <div class="w-12 h-12 rounded-lg bg-[#f8f4f9] flex items-center justify-center flex-shrink-0">
                     <Zap :size="20" class="text-[#611f69]" />
                   </div>
                   <div>
@@ -95,7 +98,7 @@
 </template>
 
 <script setup>
-import { Container, Lock, Zap, GitBranch } from 'lucide-vue-next'
+import { Container, Lock, Zap, GitBranch, Package } from 'lucide-vue-next'
 
 const { login } = useAuthClient()
 
