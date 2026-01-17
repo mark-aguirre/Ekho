@@ -1,32 +1,32 @@
-import { $fetch } from 'ofetch'
-import type { Repository, Tag, Activity, Webhook } from '~/types/repository'
-import type { UserProfile, Subscription, Usage } from '~/types/user'
+import type { Repository, Tag, Activity, Webhook } from '@@/types/repository'
+import type { UserProfile, Subscription, Usage } from '@@/types/user'
+import { useFetch } from '#app'
 
 export const useApiClient = () => {
   return {
     repositories: {
-      getAll: (): Promise<Repository[]> => $fetch('/api/repositories'),
-      getById: (id: string): Promise<Repository | null> => {
+      getAll: () => useFetch<Repository[]>('/api/repositories', { key: 'repositories' }),
+      getById: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
-        return $fetch(`/api/repositories/${id}`).catch(() => null)
+        return useFetch<Repository>(`/api/repositories/${id}`, { key: `repository-${id}` })
       },
-      getTags: (id: string): Promise<Tag[]> => {
+      getTags: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
-        return $fetch(`/api/repositories/${id}/tags`).catch(() => [])
+        return useFetch<Tag[]>(`/api/repositories/${id}/tags`, { key: `tags-${id}` })
       },
-      getActivities: (id: string): Promise<Activity[]> => {
+      getActivities: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
-        return $fetch(`/api/repositories/${id}/activities`).catch(() => [])
+        return useFetch<Activity[]>(`/api/repositories/${id}/activities`, { key: `activities-${id}` })
       },
-      getWebhooks: (id: string): Promise<Webhook[]> => {
+      getWebhooks: (id: string) => {
         if (!id) throw new Error('Repository ID is required')
-        return $fetch(`/api/repositories/${id}/webhooks`).catch(() => [])
+        return useFetch<Webhook[]>(`/api/repositories/${id}/webhooks`, { key: `webhooks-${id}` })
       }
     },
     user: {
-      getProfile: (): Promise<UserProfile> => $fetch('/api/user/profile'),
-      getSubscription: (): Promise<Subscription> => $fetch('/api/user/subscription'),
-      getUsage: (): Promise<Usage> => $fetch('/api/user/usage')
+      getProfile: () => useFetch<UserProfile>('/api/user/profile', { key: 'user-profile' }),
+      getSubscription: () => useFetch<Subscription>('/api/user/subscription', { key: 'user-subscription' }),
+      getUsage: () => useFetch<Usage>('/api/user/usage', { key: 'user-usage' })
     }
   }
 }

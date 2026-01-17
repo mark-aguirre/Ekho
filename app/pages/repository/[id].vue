@@ -212,22 +212,7 @@
                 View delivery logs ({{ webhook.delivery_logs.length }})
               </button>
               <div v-if="expandedWebhook === webhook.id" class="mt-4 border-t border-slate-100 pt-4">
-                <div class="space-y-2">
-                  <div v-for="(log, idx) in webhook.delivery_logs" :key="idx" class="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
-                    <div class="flex items-center gap-3">
-                      <CheckCircle v-if="log.success" :size="16" class="text-emerald-600" />
-                      <XCircle v-else :size="16" class="text-red-600" />
-                      <div>
-                        <p class="text-sm font-medium text-slate-900">{{ log.event }}</p>
-                        <p class="text-xs text-slate-500">{{ formatTimestamp(log.timestamp) }}</p>
-                      </div>
-                    </div>
-                    <div class="flex items-center gap-4 text-xs text-slate-600">
-                      <span :class="log.success ? 'text-emerald-600' : 'text-red-600'">{{ log.status_code }}</span>
-                      <span>{{ log.response_time_ms }}ms</span>
-                    </div>
-                  </div>
-                </div>
+                <DeliveryLogs :logs="webhook.delivery_logs" />
               </div>
             </div>
           </div>
@@ -339,6 +324,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { ArrowLeft, Globe, Lock, Copy, Star, Download, Tag as TagIcon, HardDrive, Webhook, Settings, MoreHorizontal, Archive, Trash2, Clock, ExternalLink, Plus, CheckCircle, Pause, ChevronRight, Shield, XCircle } from 'lucide-vue-next'
 import ActivityTimeline from '~/components/registry/ActivityTimeline.vue'
 import TagsTable from '~/components/registry/TagsTable.vue'
+import DeliveryLogs from '~/components/registry/DeliveryLogs.vue'
 import ConfirmDialog from '~/components/ui/ConfirmDialog.vue'
 import { useToast } from '~/composables/useToast'
 
@@ -357,14 +343,14 @@ const expandedWebhook = ref(null)
 const { success, error } = useToast()
 
 const apiClient = useApiClient()
-const { data: repository, pending } = await useAsyncData(`repository-${repositoryId}`, () => apiClient.repositories.getById(repositoryId))
-const { data: tags, pending: tagsLoading } = await useAsyncData(`tags-${repositoryId}`, () => apiClient.repositories.getTags(repositoryId))
+const { data: repository, pending } = await apiClient.repositories.getById(repositoryId)
+const { data: tags, pending: tagsLoading } = await apiClient.repositories.getTags(repositoryId)
 
 if (tags.value && repository.value) {
   tags.value = tags.value.map(tag => ({ ...tag, repository_name: repository.value.name }))
 }
-const { data: activities, pending: activitiesLoading } = await useAsyncData(`activities-${repositoryId}`, () => apiClient.repositories.getActivities(repositoryId))
-const { data: webhooks, pending: webhooksLoading } = await useAsyncData(`webhooks-${repositoryId}`, () => apiClient.repositories.getWebhooks(repositoryId))
+const { data: activities, pending: activitiesLoading } = await apiClient.repositories.getActivities(repositoryId)
+const { data: webhooks, pending: webhooksLoading } = await apiClient.repositories.getWebhooks(repositoryId)
 
 const copyTagCommand = async () => {
   const command = `docker tag myimage:latest imagehub.com/${repository.value?.name || 'repo'}:tagname`

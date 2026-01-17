@@ -71,7 +71,8 @@ const sortBy = ref('updated')
 const showCreateModal = ref(false)
 const { success } = useToast()
 
-const { data: repositories, pending, refresh } = await useFetch('/api/repositories', { server: false })
+const api = useApiClient()
+const { data: repositories, pending, refresh } = await api.repositories.getAll()
 
 const handleCreateRepository = async (repoData) => {
   success(`Repository "${repoData.name}" created successfully`)
