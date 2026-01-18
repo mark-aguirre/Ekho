@@ -74,8 +74,8 @@
             <h3 class="font-medium text-slate-900 mb-2">Pushing images</h3>
             <p class="text-sm text-slate-600 mb-3">You can push a new image to this repository using the CLI:</p>
             <div class="space-y-2 font-mono text-sm">
-              <div class="bg-slate-900 text-slate-100 px-3 py-2 rounded">docker tag local-image:tagname imagehub.com/{{ repoName || 'new-repo' }}:tagname</div>
-              <div class="bg-slate-900 text-slate-100 px-3 py-2 rounded">docker push imagehub.com/{{ repoName || 'new-repo' }}:tagname</div>
+              <div class="bg-slate-900 text-slate-100 px-3 py-2 rounded">docker tag local-image:tagname ekho.com/{{ repoName || 'new-repo' }}:tagname</div>
+              <div class="bg-slate-900 text-slate-100 px-3 py-2 rounded">docker push ekho.com/{{ repoName || 'new-repo' }}:tagname</div>
             </div>
             <p class="text-xs text-slate-500 mt-2">Make sure to replace tagname with your desired image repository tag.</p>
           </div>

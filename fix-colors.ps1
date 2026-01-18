@@ -3,7 +3,7 @@ $files = @(
 )
 
 foreach ($file in $files) {
-    $path = "c:\PersonalStorage\Programming\Projects\ImageHub\$file"
+    $path = "c:\PersonalStorage\Programming\Projects\ekho\$file"
     if (Test-Path $path) {
         $content = Get-Content $path | Out-String
         $content = $content -replace 'bg-indigo-600 hover:bg-indigo-700', 'bg-[#611f69] hover:bg-[#4a154b]'

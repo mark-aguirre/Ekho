@@ -57,9 +57,8 @@
 
     <div class="flex items-center justify-between mb-4">
       <p class="text-sm text-slate-500">{{ filteredRepositories.length }} {{ filteredRepositories.length === 1 ? 'repository' : 'repositories' }}</p>
-      <button @click="showCreateModal = true" class="flex items-center gap-2 px-4 py-2 bg-[#611f69] hover:bg-[#4a154b] text-white rounded-lg text-sm transition-colors" aria-label="Create new repository">
-        <Plus :size="16" />
-        New Repository
+      <button @click="showCreateModal = true" class="text-sm text-[#611f69] hover:text-[#4a154b] font-medium hover:underline" aria-label="Create new repository">
+        + New repository
       </button>
     </div>
 
