@@ -9,7 +9,10 @@
       <div class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-          <input v-model="searchQuery" type="text" placeholder="Search repositories..." aria-label="Search repositories" class="w-full pl-10 pr-4 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
+          <input ref="searchInput" v-model="searchQuery" type="text" placeholder="Search repositories... (Press / to focus)" aria-label="Search repositories" class="w-full pl-10 pr-10 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#611f69]" />
+          <button v-if="searchQuery" @click="searchQuery = ''" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600" aria-label="Clear search">
+            <X :size="16" />
+          </button>
         </div>
         <div class="flex gap-2">
           <div class="relative">
@@ -84,62 +87,97 @@
   </div>
 </template>
 
-<script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { Search, Plus, Package, Filter, ArrowUpDown, ChevronDown } from 'lucide-vue-next'
-import CreateRepositoryModal from '~/components/ui/CreateRepositoryModal.vue'
-import { useToast } from '~/composables/useToast'
+<script setup lang="ts">
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { Search, Plus, Package, Filter, ArrowUpDown, ChevronDown, X } from 'lucide-vue-next';
+import CreateRepositoryModal from '~/components/ui/CreateRepositoryModal.vue';
+import { useToast } from '~/composables/useToast';
 
 definePageMeta({
   middleware: 'auth'
-})
+});
 
-const searchQuery = ref('')
-const visibilityFilter = ref('all')
-const sortBy = ref('updated')
-const showCreateModal = ref(false)
-const visibilityOpen = ref(false)
-const sortOpen = ref(false)
-const { success } = useToast()
+const searchQuery = ref('');
+const debouncedSearch = ref('');
+const visibilityFilter = ref('all');
+const sortBy = ref('updated');
+const showCreateModal = ref(false);
+const visibilityOpen = ref(false);
+const sortOpen = ref(false);
+const searchInput = ref<HTMLInputElement | null>(null);
+const { success } = useToast();
 
-const api = useApiClient()
-const { data: repositories, pending, refresh } = await api.repositories.getAll()
+const api = useApiClient();
+const { data: repositories, pending, refresh } = await api.repositories.getAll();
 
-const handleCreateRepository = async (repoData) => {
-  success(`Repository "${repoData.name}" created successfully`)
-  showCreateModal.value = false
-  await refresh()
-}
+let debounceTimer: ReturnType<typeof setTimeout> | null = null;
+watch(searchQuery, (newVal) => {
+  if (debounceTimer) clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(() => {
+    debouncedSearch.value = newVal;
+  }, 300);
+});
+
+const handleCreateRepository = async (repoData: any) => {
+  success(`Repository "${repoData.name}" created successfully`);
+  showCreateModal.value = false;
+  await refresh();
+};
 
 const filteredRepositories = computed(() => {
-  if (!repositories.value) return []
+  if (!repositories.value) return [];
   
   return repositories.value
     .filter(repo => {
-      const matchesSearch = repo.name?.toLowerCase().includes(searchQuery.value.toLowerCase()) || repo.description?.toLowerCase().includes(searchQuery.value.toLowerCase())
-      const matchesVisibility = visibilityFilter.value === 'all' || repo.visibility === visibilityFilter.value
-      return matchesSearch && matchesVisibility
+      if (debouncedSearch.value) {
+        const query = debouncedSearch.value.toLowerCase();
+        const matchesSearch = repo.name?.toLowerCase().includes(query) || 
+                            repo.description?.toLowerCase().includes(query) ||
+                            repo.tags?.some(tag => tag.toLowerCase().includes(query));
+        if (!matchesSearch) return false;
+      }
+      const matchesVisibility = visibilityFilter.value === 'all' || repo.visibility === visibilityFilter.value;
+      return matchesVisibility;
     })
     .sort((a, b) => {
       switch (sortBy.value) {
         case 'name':
-          return (a.name || '').localeCompare(b.name || '')
+          return (a.name || '').localeCompare(b.name || '');
         case 'pulls':
-          return (b.pull_count || 0) - (a.pull_count || 0)
+          return (b.pull_count || 0) - (a.pull_count || 0);
         case 'stars':
-          return (b.stars || 0) - (a.stars || 0)
+          return (b.stars || 0) - (a.stars || 0);
         case 'updated':
         default:
-          return new Date(b.last_pushed_at || b.updated_date || 0) - new Date(a.last_pushed_at || a.updated_date || 0)
+          return new Date(b.last_pushed_at || b.updated_date || 0) - new Date(a.last_pushed_at || a.updated_date || 0);
       }
-    })
-})
+    });
+});
 
-const handleClickOutside = (e) => {
-  if (!e.target.closest('[aria-label="Filter by visibility"]')) visibilityOpen.value = false
-  if (!e.target.closest('[aria-label="Sort repositories"]')) sortOpen.value = false
-}
+const handleClickOutside = (e: Event) => {
+  if (!(e.target as Element).closest('[aria-label="Filter by visibility"]')) visibilityOpen.value = false;
+  if (!(e.target as Element).closest('[aria-label="Sort repositories"]')) sortOpen.value = false;
+};
 
-onMounted(() => document.addEventListener('click', handleClickOutside))
-onUnmounted(() => document.removeEventListener('click', handleClickOutside))
+const handleKeydown = (e: KeyboardEvent) => {
+  if (e.key === '/' && document.activeElement !== searchInput.value) {
+    e.preventDefault();
+    searchInput.value?.focus();
+  }
+  if (e.key === 'Escape' && document.activeElement === searchInput.value) {
+    searchQuery.value = '';
+    searchInput.value?.blur();
+  }
+};
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside);
+  document.addEventListener('keydown', handleKeydown);
+});
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside);
+  document.removeEventListener('keydown', handleKeydown);
+  if (debounceTimer) clearTimeout(debounceTimer);
+});
 </script>
