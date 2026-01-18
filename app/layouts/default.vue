@@ -19,12 +19,6 @@
               </NuxtLink>
             </nav>
           </div>
-          <div class="hidden md:flex flex-1 max-w-md mx-8">
-            <div class="relative w-full">
-              <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" aria-hidden="true" />
-              <input v-model="searchQuery" type="text" placeholder="Search repositories..." aria-label="Search repositories" class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-          </div>
           <div class="flex items-center gap-3">
             <button class="hidden md:flex p-2 text-slate-500 hover:bg-slate-100 rounded-lg" aria-label="Notifications">
               <Bell :size="20" />
@@ -63,10 +57,6 @@
       </div>
       <div v-if="mobileMenuOpen" class="md:hidden border-t border-slate-200 bg-white">
         <div class="px-4 py-3 space-y-2">
-          <div class="relative">
-            <Search :size="16" class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input v-model="searchQuery" type="text" placeholder="Search repositories..." class="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-          </div>
           <NuxtLink @click="mobileMenuOpen = false" to="/home" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
             <Package :size="16" />
             Applications
@@ -99,38 +89,36 @@
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
-import { Box, Search, Bell, User, ChevronDown, Settings, LogOut, Menu, X, Package } from 'lucide-vue-next'
-import Toast from '~/components/ui/Toast.vue'
-import { useToast } from '~/composables/useToast'
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+import { Box, Bell, User, ChevronDown, Settings, LogOut, Menu, X, Package } from 'lucide-vue-next';
+import Toast from '~/components/ui/Toast.vue';
+import { useToast } from '~/composables/useToast';
 
-const searchQuery = ref('')
-const mobileMenuOpen = ref(false)
-const userMenuOpen = ref(false)
-const user = ref(null)
-const { toasts } = useToast()
+const mobileMenuOpen = ref(false);
+const userMenuOpen = ref(false);
+const user = ref(null);
+const { toasts } = useToast();
 
 onMounted(() => {
-  // Get user from cookie
-  const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='))
+  const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='));
   if (userCookie) {
-    user.value = JSON.parse(decodeURIComponent(userCookie.split('=')[1]))
+    user.value = JSON.parse(decodeURIComponent(userCookie.split('=')[1]));
   }
-  document.addEventListener('click', handleClickOutside)
-})
-onUnmounted(() => document.removeEventListener('click', handleClickOutside))
+  document.addEventListener('click', handleClickOutside);
+});
+onUnmounted(() => document.removeEventListener('click', handleClickOutside));
 
-const handleClickOutside = (e) => {
-  if (userMenuOpen.value && !e.target.closest('[aria-haspopup="true"]')) {
-    userMenuOpen.value = false
+const handleClickOutside = (e: Event) => {
+  if (userMenuOpen.value && !(e.target as Element).closest('[aria-haspopup="true"]')) {
+    userMenuOpen.value = false;
   }
-}
+};
 
 const handleLogout = () => {
-  document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'
-  user.value = null
-  userMenuOpen.value = false
-  navigateTo('/')
-}
+  document.cookie = 'user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  user.value = null;
+  userMenuOpen.value = false;
+  navigateTo('/');
+};
 </script>
