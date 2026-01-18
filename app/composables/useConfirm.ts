@@ -1,5 +1,19 @@
+interface ConfirmDialog {
+  show: boolean;
+  title: string;
+  message: string;
+  onConfirm: (() => void) | null;
+  onCancel: (() => void) | null;
+}
+
 export const useConfirm = () => {
-  const dialog = useState('confirmDialog', () => ({ show: false, title: '', message: '', onConfirm: null }))
+  const dialog = useState<ConfirmDialog>('confirmDialog', () => ({
+    show: false,
+    title: '',
+    message: '',
+    onConfirm: null,
+    onCancel: null
+  }))
 
   const confirm = (title: string, message: string): Promise<boolean> => {
     return new Promise((resolve) => {

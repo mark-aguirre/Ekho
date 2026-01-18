@@ -4,11 +4,11 @@
       <div class="w-[80%] mx-auto px-6">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center gap-8">
-            <NuxtLink to="/" class="flex items-center gap-2.5" aria-label="Ekho Home">
+            <NuxtLink to="/" class="flex items-center gap-2.5" aria-label="eKho Home">
               <div class="w-9 h-9 bg-gradient-to-br from-indigo-500 to-violet-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20">
                 <Box :size="20" class="text-white" />
               </div>
-              <span class="font-semibold text-slate-900 text-lg tracking-tight">Ekho</span>
+              <span class="font-semibold text-slate-900 text-lg tracking-tight">eKho</span>
             </NuxtLink>
             <nav class="hidden md:flex items-center gap-1" aria-label="Main navigation">
               <NuxtLink to="/home" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#611f69] hover:bg-slate-50 rounded-lg transition-colors">

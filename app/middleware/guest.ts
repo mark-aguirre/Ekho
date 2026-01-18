@@ -1,9 +1,7 @@
 export default defineNuxtRouteMiddleware((to, from) => {
-  if (process.client) {
-    const userCookie = document.cookie.split('; ').find(row => row.startsWith('user='))
-    
-    if (userCookie) {
-      return navigateTo('/home', { replace: true })
-    }
+  const userCookie = useCookie('user')
+  
+  if (userCookie.value) {
+    return navigateTo('/home', { replace: true })
   }
 })

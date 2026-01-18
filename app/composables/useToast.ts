@@ -1,5 +1,11 @@
+interface Toast {
+  id: number;
+  message: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+}
+
 export const useToast = () => {
-  const toasts = useState('toasts', () => [])
+  const toasts = useState<Toast[]>('toasts', () => [])
 
   const show = (message: string, type: 'success' | 'error' | 'warning' | 'info' = 'info') => {
     const id = Date.now()

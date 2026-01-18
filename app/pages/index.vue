@@ -12,7 +12,7 @@
           <div>
             <div class="flex items-center gap-2 mb-6">
               <Container :size="24" class="text-[#611f69]" />
-              <span class="text-2xl font-bold text-slate-900">Ekho</span>
+              <span class="text-2xl font-bold text-slate-900">eKho</span>
             </div>
             <h1 class="text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
               Container Registry
@@ -85,7 +85,7 @@
 
     <footer class="border-t border-slate-200 bg-white py-8">
       <div class="max-w-7xl mx-auto px-6 text-center text-sm text-slate-500">
-        <p>&copy; {{ new Date().getFullYear() }} Ekho. All rights reserved.</p>
+        <p>&copy; {{ new Date().getFullYear() }} eKho. All rights reserved.</p>
       </div>
     </footer>
     </div>

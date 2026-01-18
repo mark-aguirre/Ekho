@@ -46,7 +46,7 @@
             </td>
             <td class="px-4 py-3">
               <div class="flex items-center gap-2">
-                <code class="text-xs text-slate-600 font-mono">docker pull ekho.com/{{ getRepoName(tag) }}:{{ tag.name }}</code>
+                <code class="text-xs text-slate-600 font-mono">docker pull eKho.com/{{ getRepoName(tag) }}:{{ tag.name }}</code>
                 <button @click="copyPullCommand(tag)" class="p-1 text-slate-400 hover:text-slate-600 rounded" :class="{ 'text-emerald-600': copiedTagId === tag.id }" aria-label="Copy pull command">
                   <CheckCircle v-if="copiedTagId === tag.id" :size="14" />
                   <Copy v-else :size="14" />
@@ -105,7 +105,7 @@ const getRepoName = (tag) => {
 }
 
 const copyPullCommand = async (tag) => {
-  const command = `docker pull ekho.com/${getRepoName(tag)}:${tag.name}`
+  const command = `docker pull eKho.com/${getRepoName(tag)}:${tag.name}`
   try {
     await navigator.clipboard.writeText(command)
     copiedTagId.value = tag.id

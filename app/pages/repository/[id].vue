@@ -43,14 +43,14 @@
                 <p class="text-xs font-medium text-slate-600 mb-2">To push a new tag to this repository:</p>
                 <div class="p-3 bg-slate-900 rounded-lg max-w-xl space-y-2">
                   <div class="flex items-center gap-2">
-                    <code class="flex-1 text-sm text-slate-100 font-mono">docker tag myimage:latest ekho.com/{{ repository.name }}:tagname</code>
+                    <code class="flex-1 text-sm text-slate-100 font-mono">docker tag myimage:latest eKho.com/{{ repository.name }}:tagname</code>
                     <button @click="copyTagCommand" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded" :class="{ 'text-emerald-400': copiedTag }" aria-label="Copy tag command">
                       <CheckCircle v-if="copiedTag" :size="16" />
                       <Copy v-else :size="16" />
                     </button>
                   </div>
                   <div class="flex items-center gap-2">
-                    <code class="flex-1 text-sm text-slate-100 font-mono">docker push ekho.com/{{ repository.name }}:tagname</code>
+                    <code class="flex-1 text-sm text-slate-100 font-mono">docker push eKho.com/{{ repository.name }}:tagname</code>
                     <button @click="copyPushCommand" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded" :class="{ 'text-emerald-400': copiedPush }" aria-label="Copy push command">
                       <CheckCircle v-if="copiedPush" :size="16" />
                       <Copy v-else :size="16" />
@@ -367,7 +367,7 @@ const { data: activities, pending: activitiesLoading } = await apiClient.reposit
 const { data: webhooks, pending: webhooksLoading } = await apiClient.repositories.getWebhooks(repositoryId)
 
 const copyTagCommand = async () => {
-  const command = `docker tag myimage:latest ekho.com/${repository.value?.name || 'repo'}:tagname`
+  const command = `docker tag myimage:latest eKho.com/${repository.value?.name || 'repo'}:tagname`
   try {
     await navigator.clipboard.writeText(command)
     copiedTag.value = true
@@ -379,7 +379,7 @@ const copyTagCommand = async () => {
 }
 
 const copyPushCommand = async () => {
-  const command = `docker push ekho.com/${repository.value?.name || 'repo'}:tagname`
+  const command = `docker push eKho.com/${repository.value?.name || 'repo'}:tagname`
   try {
     await navigator.clipboard.writeText(command)
     copiedPush.value = true
