@@ -11,10 +11,10 @@
               <span class="font-semibold text-slate-900 text-lg tracking-tight">eKho</span>
             </NuxtLink>
             <nav class="hidden md:flex items-center gap-1" aria-label="Main navigation">
-              <NuxtLink to="/home" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#611f69] hover:bg-slate-50 rounded-lg transition-colors">
+              <NuxtLink to="/home" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors" active-class="text-[#611f69] bg-[#f8f4f9]" inactive-class="text-slate-600 hover:text-[#611f69] hover:bg-slate-50">
                 Applications
               </NuxtLink>
-              <NuxtLink to="/repositories" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-[#611f69] hover:bg-slate-50 rounded-lg transition-colors">
+              <NuxtLink to="/repositories" class="px-3 py-2 text-sm font-medium rounded-lg transition-colors" active-class="text-[#611f69] bg-[#f8f4f9]" inactive-class="text-slate-600 hover:text-[#611f69] hover:bg-slate-50">
                 My Repositories
               </NuxtLink>
             </nav>
@@ -57,11 +57,11 @@
       </div>
       <div v-if="mobileMenuOpen" class="md:hidden border-t border-slate-200 bg-white">
         <div class="px-4 py-3 space-y-2">
-          <NuxtLink @click="mobileMenuOpen = false" to="/home" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+          <NuxtLink @click="mobileMenuOpen = false" to="/home" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" active-class="text-[#611f69] bg-[#f8f4f9]" inactive-class="text-slate-600 hover:bg-slate-50">
             <Package :size="16" />
             Applications
           </NuxtLink>
-          <NuxtLink @click="mobileMenuOpen = false" to="/repositories" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50">
+          <NuxtLink @click="mobileMenuOpen = false" to="/repositories" class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium" active-class="text-[#611f69] bg-[#f8f4f9]" inactive-class="text-slate-600 hover:bg-slate-50">
             <Package :size="16" />
             My Repositories
           </NuxtLink>
