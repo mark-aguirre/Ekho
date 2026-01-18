@@ -6,19 +6,14 @@
     <div class="absolute bottom-20 left-1/2 w-72 h-72 bg-indigo-100 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
     
     <div class="relative z-10 min-h-screen flex flex-col">
-    <header class="border-b border-slate-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-6 py-4">
-        <div class="flex items-center gap-2">
-          <Container :size="20" class="text-[#611f69]" />
-          <span class="text-xl font-bold text-slate-900">Ekho</span>
-        </div>
-      </div>
-    </header>
-
     <main class="flex-1 flex items-center">
       <section class="max-w-7xl mx-auto px-6 py-20 lg:py-32 w-full" aria-label="Hero section">
         <div class="grid lg:grid-cols-2 gap-16 items-center">
           <div>
+            <div class="flex items-center gap-2 mb-6">
+              <Container :size="24" class="text-[#611f69]" />
+              <span class="text-2xl font-bold text-slate-900">Ekho</span>
+            </div>
             <h1 class="text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
               Container Registry
               <span class="block text-[#611f69]">Made Simple</span>
